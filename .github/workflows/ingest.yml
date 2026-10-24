@@ -1,0 +1,22 @@
+name: ingest
+on:
+  schedule:
+    - cron: "30 21 * * 1-5"   # weekdays 21:30 UTC (18:30 Brasília), after PTAX closes
+  workflow_dispatch: {}        # lets you press "Run workflow" manually
+permissions:
+  contents: write
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: python ingest.py
+      - name: Commit new data
+        run: |
+          git config user.name "brasimundo-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data
+          git diff --cached --quiet || git commit -m "data: $(date -u +%Y-%m-%d)"
+          git push
