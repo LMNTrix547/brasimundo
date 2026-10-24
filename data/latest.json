@@ -1,0 +1,50 @@
+{
+ "selic_meta": {
+  "name": "Selic meta (SGS 432)",
+  "value": 13.75,
+  "unit": "% a.a.",
+  "ref_date": "2026-11-04",
+  "retrieved_at": "2026-10-24T10:49:53Z",
+  "source": "Banco Central do Brasil",
+  "license": "Dados abertos (Banco Central do Brasil)",
+  "verification_level": "N5",
+  "frequency": "a cada decisão",
+  "data_status": "ok"
+ },
+ "ipca_12m": {
+  "name": "IPCA 12 meses (SGS 13522, origem IBGE)",
+  "value": 4.58,
+  "unit": "%",
+  "ref_date": "2026-09-01",
+  "retrieved_at": "2026-10-24T10:49:53Z",
+  "source": "Banco Central do Brasil",
+  "license": "Dados abertos (Banco Central do Brasil)",
+  "verification_level": "N5",
+  "frequency": "mensal",
+  "data_status": "stale"
+ },
+ "ptax_usd": {
+  "name": "PTAX dólar, venda",
+  "value": 5.0377,
+  "unit": "R$",
+  "ref_date": "2026-10-23",
+  "retrieved_at": "2026-10-24T10:49:53Z",
+  "source": "Banco Central do Brasil",
+  "license": "Dados abertos (Banco Central do Brasil)",
+  "verification_level": "N5",
+  "frequency": "diária",
+  "data_status": "ok"
+ },
+ "ptax_eur": {
+  "name": "PTAX euro, venda",
+  "value": 5.6422,
+  "unit": "R$",
+  "ref_date": "2026-10-23",
+  "retrieved_at": "2026-10-24T10:49:53Z",
+  "source": "Banco Central do Brasil",
+  "license": "Dados abertos (Banco Central do Brasil)",
+  "verification_level": "N5",
+  "frequency": "diária",
+  "data_status": "ok"
+ }
+}
