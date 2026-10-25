@@ -31,9 +31,13 @@ def get(url, tries=3):
 
 def sgs(code):
     rows = get(SGS.format(c=code, n=5))
-    d = rows[-1]
-    ref = datetime.strptime(d["data"], "%d/%m/%Y").date().isoformat()
-    return float(d["valor"]), ref
+    today = NOW.date()
+    # newest row that is not dated in the future (a future date means a scheduled entry, not a fact)
+    for d in reversed(rows):
+        ref_date = datetime.strptime(d["data"], "%d/%m/%Y").date()
+        if ref_date <= today:
+            return float(d["valor"]), ref_date.isoformat()
+    raise RuntimeError(f"SGS {code}: no non-future rows returned")
 
 def ptax(currency):
     end, start = NOW.date(), NOW.date() - timedelta(days=10)
@@ -50,7 +54,9 @@ def ptax(currency):
 
 SERIES = [  # id, name, unit, frequency, max age in days before "stale", fetcher
     ("selic_meta", "Selic meta (SGS 432)", "% a.a.", "a cada decisão", 60, lambda: sgs(432)),
-    ("ipca_12m", "IPCA 12 meses (SGS 13522, origem IBGE)", "%", "mensal", 45, lambda: sgs(13522)),
+    # monthly series are dated on the 1st of the reference month and released ~10 days later,
+    # so 75 days is the realistic limit before it is really stale
+    ("ipca_12m", "IPCA 12 meses (SGS 13522, origem IBGE)", "%", "mensal", 75, lambda: sgs(13522)),
     ("ptax_usd", "PTAX dólar, venda", "R$", "diária", 5, lambda: ptax("USD")),
     ("ptax_eur", "PTAX euro, venda", "R$", "diária", 5, lambda: ptax("EUR")),
 ]
@@ -94,6 +100,8 @@ def main():
         print(sid, status[sid]["live_fetch"])
     json.dump(latest, open(f"{OUT}/latest.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     json.dump(status, open(f"{OUT}/status.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    if not any(s["live_fetch"] == "success" for s in status.values()):
+        raise SystemExit("ALL sources failed; see data/status.json")  # red X in GitHub Actions
 
 if __name__ == "__main__":
     main()
