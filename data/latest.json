@@ -3,13 +3,13 @@
   "name": "Selic meta (SGS 432)",
   "value": 13.75,
   "unit": "% a.a.",
-  "ref_date": "2026-11-04",
+  "ref_date": "2026-09-17",
   "retrieved_at": "2026-10-24T10:49:53Z",
   "source": "Banco Central do Brasil",
   "license": "Dados abertos (Banco Central do Brasil)",
   "verification_level": "N5",
   "frequency": "a cada decisão",
-  "data_status": "stale"
+  "data_status": "ok"
  },
  "ipca_12m": {
   "name": "IPCA 12 meses (SGS 13522, origem IBGE)",
