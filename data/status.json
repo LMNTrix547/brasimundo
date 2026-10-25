@@ -1,26 +1,25 @@
 {
  "selic_meta": {
-  "live_fetch": "success",
-  "run_at": "2026-10-24T10:49:53Z",
-  "last_data": "2026-11-04",
-  "age_days": -11
+  "live_fetch": "failed",
+  "run_at": "2026-10-25T11:45:42Z",
+  "error": "SGS 432: no non-future rows returned"
  },
  "ipca_12m": {
   "live_fetch": "success",
-  "run_at": "2026-10-24T10:49:53Z",
+  "run_at": "2026-10-25T11:45:42Z",
   "last_data": "2026-09-01",
-  "age_days": 53
+  "age_days": 54
  },
  "ptax_usd": {
   "live_fetch": "success",
-  "run_at": "2026-10-24T10:49:53Z",
+  "run_at": "2026-10-25T11:45:42Z",
   "last_data": "2026-10-23",
-  "age_days": 1
+  "age_days": 2
  },
  "ptax_eur": {
   "live_fetch": "success",
-  "run_at": "2026-10-24T10:49:53Z",
+  "run_at": "2026-10-25T11:45:42Z",
   "last_data": "2026-10-23",
-  "age_days": 1
+  "age_days": 2
  }
 }
