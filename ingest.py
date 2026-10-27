@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Brasimundo ingestion v0.1: Banco Central do Brasil open data.
 
-Pulls Selic target, IPCA 12m, PTAX USD and EUR. Python standard library only.
+Pulls Selic, IPCA 12m, PTAX USD/EUR, unemployment (IBGE), gross debt and the Focus IPCA 2026 median. Python standard library only.
 Writes:
   data/latest.json          newest value per series
   data/history/<id>.csv     every ref_date ever seen (deduplicated)
@@ -52,13 +52,35 @@ def ptax(currency):
     r = rows[0]  # newest closing bulletin
     return float(r["cotacaoVenda"]), r["dataHoraCotacao"][:10]
 
+# IBGE SIDRA, table 6381 (PNAD Contínua), variable 4099: unemployment rate.
+# Each row carries D2C = YYYYMM of the last month of the moving quarter.
+SIDRA = "https://apisidra.ibge.gov.br/values/t/6381/n1/all/v/4099/p/last%201/d/v4099%201"
+
+# Banco Central, Expectativas de Mercado: median of the Focus survey for IPCA 2026.
+FOCUS = ("https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+         "ExpectativasMercadoAnuais?$filter=Indicador%20eq%20'IPCA'%20and%20DataReferencia%20eq%20'2026'"
+         "&$orderby=Data%20desc&$top=1&$format=json")
+
+def unemployment():
+    row = get(SIDRA)[1]  # index 0 is the header row
+    p = row["D2C"]
+    return float(row["V"]), f"{p[:4]}-{p[4:6]}-01"
+
+def focus_ipca_2026():
+    r = get(FOCUS)["value"][0]
+    return float(r["Mediana"]), r["Data"][:10]
+
 SERIES = [  # id, name, unit, frequency, max age in days before "stale", fetcher
     ("selic_meta", "Selic meta (SGS 432)", "% a.a.", "a cada decisão", 60, lambda: sgs(432)),
     # monthly series are dated on the 1st of the reference month and released ~10 days later,
-    # so 75 days is the realistic limit before it is really stale
+    # so 75 days is the realistic limit before it is really stale.
+    # Unemployment and gross debt publish about two months after the reference month: 100 days.
     ("ipca_12m", "IPCA 12 meses (SGS 13522, origem IBGE)", "%", "mensal", 75, lambda: sgs(13522)),
     ("ptax_usd", "PTAX dólar, venda", "R$", "diária", 5, lambda: ptax("USD")),
     ("ptax_eur", "PTAX euro, venda", "R$", "diária", 5, lambda: ptax("EUR")),
+    ("desemprego", "Taxa de desocupação (PNAD Contínua, IBGE)", "%", "trimestre móvel", 100, unemployment),
+    ("divida_bruta", "Dívida bruta do governo geral (SGS 13762)", "% do PIB", "mensal", 100, lambda: sgs(13762)),
+    ("focus_ipca_2026", "Focus: IPCA 2026, mediana", "%", "semanal", 14, focus_ipca_2026),
 ]
 
 def load(path, default):
