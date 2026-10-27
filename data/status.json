@@ -1,25 +1,42 @@
 {
  "selic_meta": {
   "live_fetch": "failed",
-  "run_at": "2026-10-27T00:39:08Z",
+  "run_at": "2026-10-27T12:45:05Z",
   "error": "SGS 432: no non-future rows returned"
  },
  "ipca_12m": {
   "live_fetch": "success",
-  "run_at": "2026-10-27T00:39:08Z",
+  "run_at": "2026-10-27T12:45:05Z",
   "last_data": "2026-09-01",
   "age_days": 56
  },
  "ptax_usd": {
   "live_fetch": "success",
-  "run_at": "2026-10-27T00:39:08Z",
+  "run_at": "2026-10-27T12:45:05Z",
   "last_data": "2026-10-26",
   "age_days": 1
  },
  "ptax_eur": {
   "live_fetch": "success",
-  "run_at": "2026-10-27T00:39:08Z",
+  "run_at": "2026-10-27T12:45:05Z",
   "last_data": "2026-10-26",
   "age_days": 1
+ },
+ "desemprego": {
+  "live_fetch": "failed",
+  "run_at": "2026-10-27T12:45:05Z",
+  "error": "Invalid isoformat string: '4099--01'"
+ },
+ "divida_bruta": {
+  "live_fetch": "success",
+  "run_at": "2026-10-27T12:45:05Z",
+  "last_data": "2026-04-01",
+  "age_days": 209
+ },
+ "focus_ipca_2026": {
+  "live_fetch": "success",
+  "run_at": "2026-10-27T12:45:05Z",
+  "last_data": "2026-10-23",
+  "age_days": 4
  }
 }
