@@ -14,7 +14,7 @@ from datetime import datetime, timedelta, timezone
 OUT = os.path.dirname(os.path.abspath(__file__)) + "/data"
 NOW = datetime.now(timezone.utc)
 UA = {"User-Agent": "brasimundo-ingest/0.1"}
-SGS = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.{c}/dados/ultimos/{n}?formato=json"
+SGS_RANGE = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.{c}/dados?formato=json&dataInicial={a}&dataFinal={b}"
 PTAX = ("https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/"
         "{fn}?{args}&$format=json&$orderby=dataHoraCotacao%20desc")
 LIC = "Dados abertos (Banco Central do Brasil)"
@@ -30,14 +30,17 @@ def get(url, tries=3):
     raise RuntimeError(f"{type(err).__name__}: {err}")
 
 def sgs(code):
-    rows = get(SGS.format(c=code, n=5))
+    # Ask for a date range that ends today, so the feed never returns future-dated rows
+    # (it now publishes scheduled Copom dates; "last N rows" can be all future).
+    start = (NOW.date() - timedelta(days=730)).strftime("%d/%m/%Y")
+    end = NOW.date().strftime("%d/%m/%Y")
+    rows = get(SGS_RANGE.format(c=code, a=start, b=end))
     today = NOW.date()
-    # newest row that is not dated in the future (a future date means a scheduled entry, not a fact)
     for d in reversed(rows):
         ref_date = datetime.strptime(d["data"], "%d/%m/%Y").date()
         if ref_date <= today:
             return float(d["valor"]), ref_date.isoformat()
-    raise RuntimeError(f"SGS {code}: no non-future rows returned")
+    raise RuntimeError(f"SGS {code}: no non-future rows in {start}..{end}")
 
 def ptax(currency):
     end, start = NOW.date(), NOW.date() - timedelta(days=10)
@@ -63,7 +66,14 @@ FOCUS = ("https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/
 
 def unemployment():
     row = get(SIDRA)[1]  # index 0 is the header row
-    p = row["D2C"]
+    # SIDRA gives one column per dimension: D1 territory, D2 variable, D3 period.
+    # The period is the only 6-digit code (YYYYMM), so find it by shape, not by position.
+    periods = [v for k, v in row.items()
+               if k.startswith("D") and k.endswith("C") and isinstance(v, str)
+               and len(v) == 6 and v.isdigit()]
+    if not periods:
+        raise RuntimeError(f"no period code in SIDRA row: {sorted(row)}")
+    p = periods[0]
     return float(row["V"]), f"{p[:4]}-{p[4:6]}-01"
 
 def focus_ipca_2026():
