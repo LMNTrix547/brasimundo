@@ -42,8 +42,8 @@ def sgs(code):
             return float(d["valor"]), ref_date.isoformat()
     raise RuntimeError(f"SGS {code}: no non-future rows in {start}..{end}")
 
-def ptax(currency):
-    end, start = NOW.date(), NOW.date() - timedelta(days=10)
+def _ptax_rows(currency, days, top=None):
+    end, start = NOW.date(), NOW.date() - timedelta(days=days)
     f = lambda d: d.strftime("'%m-%d-%Y'")
     if currency == "USD":
         url = PTAX.format(fn="CotacaoDolarPeriodo(dataInicial=@i,dataFinalCotacao=@f)",
@@ -51,9 +51,27 @@ def ptax(currency):
     else:
         url = PTAX.format(fn="CotacaoMoedaPeriodo(moeda=@m,dataInicial=@i,dataFinalCotacao=@f)",
                           args=f"@m='{currency}'&@i={f(start)}&@f={f(end)}")
-    rows = [r for r in get(url)["value"] if str(r.get("tipoBoletim", "Fechamento")).startswith("Fechamento")]
-    r = rows[0]  # newest closing bulletin
+    if top: url += f"&$top={top}"
+    return [r for r in get(url)["value"] if str(r.get("tipoBoletim", "Fechamento")).startswith("Fechamento")]
+
+def ptax(currency):
+    r = _ptax_rows(currency, 10)[0]  # newest closing bulletin
     return float(r["cotacaoVenda"]), r["dataHoraCotacao"][:10]
+
+def ptax_history(currency):
+    out = {}
+    for r in _ptax_rows(currency, 730, top=10000):  # newest first: keep the first (latest) per day
+        out.setdefault(r["dataHoraCotacao"][:10], float(r["cotacaoVenda"]))
+    return sorted(out.items())
+
+def sgs_history(code, days=730):
+    start = (NOW.date() - timedelta(days=days)).strftime("%d/%m/%Y")
+    end = NOW.date().strftime("%d/%m/%Y")
+    out = []
+    for d in get(SGS_RANGE.format(c=code, a=start, b=end)):
+        ref = datetime.strptime(d["data"], "%d/%m/%Y").date()
+        if ref <= NOW.date(): out.append((ref.isoformat(), float(d["valor"])))
+    return out
 
 # IBGE SIDRA, table 6381 (PNAD Contínua), variable 4099: unemployment rate.
 # Each row carries D2C = YYYYMM of the last month of the moving quarter.
@@ -79,6 +97,32 @@ def unemployment():
 def focus_ipca_2026():
     r = get(FOCUS)["value"][0]
     return float(r["Mediana"]), r["Data"][:10]
+
+def unemployment_history():
+    rows = get(SIDRA.replace("p/last%201", "p/last%2024"))[1:]  # index 0 is the header row
+    out = []
+    for row in rows:
+        p = next(v for k, v in row.items() if k.startswith("D") and k.endswith("C")
+                 and isinstance(v, str) and len(v) == 6 and v.isdigit())
+        out.append((f"{p[:4]}-{p[4:6]}-01", float(row["V"])))
+    return sorted(out)
+
+def focus_history():
+    url = FOCUS.replace("$top=1", "$top=104")
+    out = {}
+    for r in get(url)["value"]:  # newest first: keep the first row per date
+        out.setdefault(r["Data"][:10], float(r["Mediana"]))
+    return sorted(out.items())
+
+HISTORY = {  # one-time backfill so charts have a past; the daily job only adds the newest point
+    "selic_meta": lambda: sgs_history(432),
+    "ipca_12m": lambda: sgs_history(13522),
+    "divida_bruta": lambda: sgs_history(13762),
+    "ptax_usd": lambda: ptax_history("USD"),
+    "ptax_eur": lambda: ptax_history("EUR"),
+    "desemprego": unemployment_history,
+    "focus_ipca_2026": focus_history,
+}
 
 SERIES = [  # id, name, unit, frequency, max age in days before "stale", fetcher
     ("selic_meta", "Selic meta (SGS 432)", "% a.a.", "a cada decisão", 60, lambda: sgs(432)),
@@ -111,6 +155,21 @@ def append_history(sid, ref, value, retrieved):
         if new: w.writerow(["ref_date", "value", "retrieved_at", "verification_level"])
         w.writerow([ref, value, retrieved, "N5"])
 
+def backfill(sid, stamp):
+    fn = HISTORY.get(sid)
+    if not fn: return "n/a"
+    p = f"{OUT}/history/{sid}.csv"
+    have = 0
+    if os.path.exists(p):
+        with open(p, encoding="utf-8") as f: have = sum(1 for _ in f) - 1
+    if have >= 20: return "skipped"  # already has a past
+    try:
+        rows = fn()
+        for ref, val in rows: append_history(sid, ref, val, stamp)
+        return f"ok:{len(rows)}"
+    except Exception as e:  # never fail the run because charts could not be backfilled
+        return "failed:" + str(e)[:150]
+
 def main():
     os.makedirs(f"{OUT}/history", exist_ok=True)
     latest = load(f"{OUT}/latest.json", {})
@@ -123,8 +182,10 @@ def main():
                            "retrieved_at": stamp, "source": "Banco Central do Brasil",
                            "license": LIC, "verification_level": "N5", "frequency": freq,
                            "data_status": "stale" if age > max_age else "ok"}
+            bf = backfill(sid, stamp)
             append_history(sid, ref, value, stamp)
-            status[sid] = {"live_fetch": "success", "run_at": stamp, "last_data": ref, "age_days": age}
+            status[sid] = {"live_fetch": "success", "run_at": stamp, "last_data": ref, "age_days": age,
+                           "history_backfill": bf}
         except Exception as e:
             # keep the previous value, but mark it so nobody mistakes it for fresh
             if sid in latest: latest[sid]["data_status"] = "stale"
