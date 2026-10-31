@@ -1,44 +1,51 @@
 {
  "selic_meta": {
   "live_fetch": "success",
-  "run_at": "2026-10-31T00:54:54Z",
+  "run_at": "2026-10-31T10:33:51Z",
   "last_data": "2026-10-31",
-  "age_days": 0
+  "age_days": 0,
+  "history_backfill": "ok:731"
  },
  "ipca_12m": {
   "live_fetch": "success",
-  "run_at": "2026-10-31T00:54:54Z",
+  "run_at": "2026-10-31T10:33:51Z",
   "last_data": "2026-09-01",
-  "age_days": 60
+  "age_days": 60,
+  "history_backfill": "ok:24"
  },
  "ptax_usd": {
   "live_fetch": "success",
-  "run_at": "2026-10-31T00:54:54Z",
+  "run_at": "2026-10-31T10:33:51Z",
   "last_data": "2026-10-30",
-  "age_days": 1
+  "age_days": 1,
+  "history_backfill": "ok:501"
  },
  "ptax_eur": {
   "live_fetch": "success",
-  "run_at": "2026-10-31T00:54:54Z",
+  "run_at": "2026-10-31T10:33:51Z",
   "last_data": "2026-10-30",
-  "age_days": 1
+  "age_days": 1,
+  "history_backfill": "ok:501"
  },
  "desemprego": {
   "live_fetch": "success",
-  "run_at": "2026-10-31T00:54:54Z",
+  "run_at": "2026-10-31T10:33:51Z",
   "last_data": "2026-09-01",
-  "age_days": 60
+  "age_days": 60,
+  "history_backfill": "ok:24"
  },
  "divida_bruta": {
   "live_fetch": "success",
-  "run_at": "2026-10-31T00:54:54Z",
+  "run_at": "2026-10-31T10:33:51Z",
   "last_data": "2026-09-01",
-  "age_days": 60
+  "age_days": 60,
+  "history_backfill": "ok:24"
  },
  "focus_ipca_2026": {
   "live_fetch": "success",
-  "run_at": "2026-10-31T00:54:54Z",
+  "run_at": "2026-10-31T10:33:51Z",
   "last_data": "2026-10-23",
-  "age_days": 8
+  "age_days": 8,
+  "history_backfill": "ok:52"
  }
 }
