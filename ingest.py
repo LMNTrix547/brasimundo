@@ -120,11 +120,17 @@ STATE_UF = {"11":"RO","12":"AC","13":"AM","14":"RR","15":"PA","16":"AP","17":"TO
             "21":"MA","22":"PI","23":"CE","24":"RN","25":"PB","26":"PE","27":"AL","28":"SE","29":"BA",
             "31":"MG","32":"ES","33":"RJ","35":"SP","41":"PR","42":"SC","43":"RS",
             "50":"MS","51":"MT","52":"GO","53":"DF"}
-SIDRA_STATES = "https://apisidra.ibge.gov.br/values/t/6381/n3/all/v/4099/p/last%201/d/v4099%201"
+# State unemployment. IBGE refused the first address (HTTP 400), so this asks for every variable by
+# state and picks the row named "Taxa de desocupação". If one table fails, the next one is tried.
+SIDRA_STATE_SOURCES = [
+    "https://apisidra.ibge.gov.br/values/t/6381/n3/all/v/all/p/last%201",
+    "https://apisidra.ibge.gov.br/values/t/4714/n3/all/v/all/p/last%201",
+]
 
-def states_unemployment():
+def _parse_states(rows):
     out = {}
-    for row in get(SIDRA_STATES)[1:]:  # index 0 is the header row
+    for row in rows[1:]:  # index 0 is the header row
+        if "taxa de desocupa" not in str(row.get("D2N", "")).lower(): continue
         uf = STATE_UF.get(str(row.get("D1C", "")))
         if uf is None: continue
         try:
@@ -137,6 +143,16 @@ def states_unemployment():
         out[uf] = {"name": row.get("D1N", uf), "value": value, "ref_date": f"{p[:4]}-{p[4:6]}-01"}
     if len(out) != 27: raise RuntimeError(f"expected 27 states, got {len(out)}")
     return out
+
+def states_unemployment():
+    errors = []
+    for url in SIDRA_STATE_SOURCES:
+        table = url.split("/t/")[1].split("/")[0]
+        try:
+            return _parse_states(get(url, tries=2))
+        except Exception as e:
+            errors.append(f"table {table}: {str(e)[:150]}")
+    raise RuntimeError("; ".join(errors))
 
 HISTORY = {  # one-time backfill so charts have a past; the daily job only adds the newest point
     "selic_meta": lambda: sgs_history(432),
