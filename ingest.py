@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Brasimundo ingestion v0.1: Banco Central do Brasil open data.
 
-Pulls Selic, IPCA 12m, PTAX USD/EUR, unemployment (IBGE), gross debt and the Focus IPCA 2026 median. Python standard library only.
+Pulls Selic, IPCA 12m, PTAX USD/EUR, unemployment (IBGE, national and by state), gross debt and the Focus IPCA 2026 median. Python standard library only.
 Writes:
   data/latest.json          newest value per series
   data/history/<id>.csv     every ref_date ever seen (deduplicated)
@@ -114,6 +114,30 @@ def focus_history():
         out.setdefault(r["Data"][:10], float(r["Mediana"]))
     return sorted(out.items())
 
+# Unemployment for each of the 27 states (IBGE SIDRA, table 6381, territory level UF).
+# SIDRA uses the IBGE state code, so map it to the two-letter abbreviation.
+STATE_UF = {"11":"RO","12":"AC","13":"AM","14":"RR","15":"PA","16":"AP","17":"TO",
+            "21":"MA","22":"PI","23":"CE","24":"RN","25":"PB","26":"PE","27":"AL","28":"SE","29":"BA",
+            "31":"MG","32":"ES","33":"RJ","35":"SP","41":"PR","42":"SC","43":"RS",
+            "50":"MS","51":"MT","52":"GO","53":"DF"}
+SIDRA_STATES = "https://apisidra.ibge.gov.br/values/t/6381/n3/all/v/4099/p/last%201/d/v4099%201"
+
+def states_unemployment():
+    out = {}
+    for row in get(SIDRA_STATES)[1:]:  # index 0 is the header row
+        uf = STATE_UF.get(str(row.get("D1C", "")))
+        if uf is None: continue
+        try:
+            value = float(row["V"])
+        except (TypeError, ValueError):
+            continue  # SIDRA marks unpublished values with symbols; the count check below catches the gap
+        p = next((v for k, v in row.items() if k.startswith("D") and k.endswith("C")
+                  and isinstance(v, str) and len(v) == 6 and v.isdigit()), None)
+        if p is None: raise RuntimeError(f"no period code for {uf}")
+        out[uf] = {"name": row.get("D1N", uf), "value": value, "ref_date": f"{p[:4]}-{p[4:6]}-01"}
+    if len(out) != 27: raise RuntimeError(f"expected 27 states, got {len(out)}")
+    return out
+
 HISTORY = {  # one-time backfill so charts have a past; the daily job only adds the newest point
     "selic_meta": lambda: sgs_history(432),
     "ipca_12m": lambda: sgs_history(13522),
@@ -136,6 +160,23 @@ SERIES = [  # id, name, unit, frequency, max age in days before "stale", fetcher
     ("divida_bruta", "Dívida bruta do governo geral (SGS 13762)", "% do PIB", "mensal", 100, lambda: sgs(13762)),
     ("focus_ipca_2026", "Focus: IPCA 2026, mediana", "%", "semanal", 14, focus_ipca_2026),
 ]
+
+# Plausible range per series. A value outside it is rejected as a failed fetch, so a wrong
+# series code or unit cannot reach the site as a current number. Wide on purpose: this only
+# catches gross errors, not ordinary movements.
+PLAUSIBLE = {
+    "selic_meta": (0, 40),
+    "ipca_12m": (-5, 40),
+    "ptax_usd": (1, 20),
+    "ptax_eur": (1, 25),
+    "desemprego": (0, 40),
+    "divida_bruta": (20, 150),   # % do PIB
+    "focus_ipca_2026": (-5, 40),
+}
+
+def in_range(sid, value):
+    lo, hi = PLAUSIBLE.get(sid, (float("-inf"), float("inf")))
+    return lo <= value <= hi
 
 def load(path, default):
     try:
@@ -164,7 +205,7 @@ def backfill(sid, stamp):
         with open(p, encoding="utf-8") as f: have = sum(1 for _ in f) - 1
     if have >= 20: return "skipped"  # already has a past
     try:
-        rows = fn()
+        rows = [(ref, val) for ref, val in fn() if in_range(sid, val)]
         for ref, val in rows: append_history(sid, ref, val, stamp)
         return f"ok:{len(rows)}"
     except Exception as e:  # never fail the run because charts could not be backfilled
@@ -177,6 +218,8 @@ def main():
     for sid, name, unit, freq, max_age, fetch in SERIES:
         try:
             value, ref = fetch()
+            if not in_range(sid, value):
+                raise RuntimeError(f"implausible value {value} for {sid}; check the series code and unit")
             age = (NOW.date() - datetime.fromisoformat(ref).date()).days
             latest[sid] = {"name": name, "value": value, "unit": unit, "ref_date": ref,
                            "retrieved_at": stamp, "source": "Banco Central do Brasil",
@@ -191,6 +234,19 @@ def main():
             if sid in latest: latest[sid]["data_status"] = "stale"
             status[sid] = {"live_fetch": "failed", "run_at": stamp, "error": str(e)[:300]}
         print(sid, status[sid]["live_fetch"])
+    # State unemployment: its own file, replaced only when all 27 states arrive.
+    try:
+        states = states_unemployment()
+        bad = [uf for uf, s_ in states.items() if not in_range("desemprego", s_["value"])]
+        if bad: raise RuntimeError(f"implausible state values: {bad}")
+        json.dump({"retrieved_at": stamp, "source": "IBGE, PNAD Contínua (desocupação por UF)",
+                   "license": "Dados abertos (IBGE)", "verification_level": "N5",
+                   "series": "desemprego", "states": states},
+                  open(f"{OUT}/estados.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        status["estados_desemprego"] = {"live_fetch": "success", "run_at": stamp, "states": len(states)}
+    except Exception as e:
+        status["estados_desemprego"] = {"live_fetch": "failed", "run_at": stamp, "error": str(e)[:300]}
+    print("estados_desemprego", status["estados_desemprego"]["live_fetch"])
     json.dump(latest, open(f"{OUT}/latest.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     json.dump(status, open(f"{OUT}/status.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     if not any(s["live_fetch"] == "success" for s in status.values()):
