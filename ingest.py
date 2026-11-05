@@ -191,6 +191,17 @@ HISTORY = {  # one-time backfill so charts have a past; the daily job only adds 
     "focus_ipca_2026": focus_history,
 }
 
+# Banco Central, balança comercial (bens), Balanço de Pagamentos, mensal, US$ milhões (SGS 22707).
+# The indicator is the year-to-date balance: the sum of the monthly values for the latest year.
+BALANCA_SGS = 22707
+
+def balanca_ytd():
+    rows = sgs_history(BALANCA_SGS)
+    if not rows: raise RuntimeError("no rows from SGS 22707")
+    year = max(d[:4] for d, _ in rows)
+    ytd = [(d, v) for d, v in rows if d[:4] == year]
+    return sum(v for _, v in ytd), max(d for d, _ in ytd)
+
 SERIES = [  # id, name, unit, frequency, max age in days before "stale", fetcher
     ("selic_meta", "Selic meta (SGS 432)", "% a.a.", "a cada decisão", 60, lambda: sgs(432)),
     # monthly series are dated on the 1st of the reference month and released ~10 days later,
@@ -202,6 +213,7 @@ SERIES = [  # id, name, unit, frequency, max age in days before "stale", fetcher
     ("desemprego", "Taxa de desocupação (PNAD Contínua, IBGE)", "%", "trimestre móvel", 100, unemployment),
     ("divida_bruta", "Dívida bruta do governo geral (SGS 13762)", "% do PIB", "mensal", 100, lambda: sgs(13762)),
     ("focus_ipca_2026", "Focus: IPCA 2026, mediana", "%", "semanal", 14, focus_ipca_2026),
+    ("balanca_comercial", "Balança comercial, acumulado no ano (SGS 22707)", "US$ milhões", "mensal", 75, balanca_ytd),
 ]
 
 # Plausible range per series. A value outside it is rejected as a failed fetch, so a wrong
@@ -215,6 +227,7 @@ PLAUSIBLE = {
     "desemprego": (0, 40),
     "divida_bruta": (20, 150),   # % do PIB
     "focus_ipca_2026": (-5, 40),
+    "balanca_comercial": (-100000, 200000),  # US$ milhões, year to date
 }
 
 def in_range(sid, value):
