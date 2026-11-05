@@ -120,39 +120,65 @@ STATE_UF = {"11":"RO","12":"AC","13":"AM","14":"RR","15":"PA","16":"AP","17":"TO
             "21":"MA","22":"PI","23":"CE","24":"RN","25":"PB","26":"PE","27":"AL","28":"SE","29":"BA",
             "31":"MG","32":"ES","33":"RJ","35":"SP","41":"PR","42":"SC","43":"RS",
             "50":"MS","51":"MT","52":"GO","53":"DF"}
-# State unemployment. IBGE refused the first address (HTTP 400), so this asks for every variable by
-# state and picks the row named "Taxa de desocupação". If one table fails, the next one is tried.
-SIDRA_STATE_SOURCES = [
-    "https://apisidra.ibge.gov.br/values/t/6381/n3/all/v/all/p/last%201",
-    "https://apisidra.ibge.gov.br/values/t/4714/n3/all/v/all/p/last%201",
+# State unemployment (27 UFs). Three sources are tried in order; the first that gives all 27 wins.
+# Every failure is recorded in status.json with what IBGE actually returned, so it can be fixed from that.
+STATE_SOURCES = [
+    ("SIDRA 6381", "https://apisidra.ibge.gov.br/values/t/6381/n3/all/v/4099/p/last%201", "sidra"),
+    ("IBGE agregados 6381", "https://servicodados.ibge.gov.br/api/v3/agregados/6381/periodos/-1/variaveis/4099?localidades=N3[all]", "agregados"),
+    ("SIDRA 4714", "https://apisidra.ibge.gov.br/values/t/4714/n3/all/v/all/p/last%201", "sidra_named"),
 ]
 
-def _parse_states(rows):
-    out = {}
+def _states_from_sidra(rows, named):
+    out, names, codes = {}, set(), set()
     for row in rows[1:]:  # index 0 is the header row
-        if "taxa de desocupa" not in str(row.get("D2N", "")).lower(): continue
-        uf = STATE_UF.get(str(row.get("D1C", "")))
+        if named and "taxa de desocupa" not in str(row.get("D2N", "")).lower():
+            names.add(str(row.get("D2N", ""))[:40]); continue
+        code = str(row.get("D1C", "")); codes.add(code)
+        uf = STATE_UF.get(code)
         if uf is None: continue
         try:
             value = float(row["V"])
         except (TypeError, ValueError):
-            continue  # SIDRA marks unpublished values with symbols; the count check below catches the gap
+            continue  # unpublished value (SIDRA uses symbols); the count check below catches the gap
         p = next((v for k, v in row.items() if k.startswith("D") and k.endswith("C")
                   and isinstance(v, str) and len(v) == 6 and v.isdigit()), None)
         if p is None: raise RuntimeError(f"no period code for {uf}")
         out[uf] = {"name": row.get("D1N", uf), "value": value, "ref_date": f"{p[:4]}-{p[4:6]}-01"}
-    if len(out) != 27: raise RuntimeError(f"expected 27 states, got {len(out)}")
+    if len(out) != 27:
+        raise RuntimeError(f"{len(out)} states from {len(rows) - 1} rows; codes seen {sorted(codes)[:6]}; "
+                           f"variable names seen {sorted(names)[:3]}")
+    return out
+
+def _states_from_agregados(data):
+    out = {}
+    series = data[0]["resultados"][0]["series"]
+    for s in series:
+        uf = STATE_UF.get(str(s["localidade"]["id"]))
+        if uf is None: continue
+        valid = {k: v for k, v in s["serie"].items() if v not in (None, "", "-", "...")}
+        if not valid: continue
+        period = max(valid)  # YYYYMM keys: the latest period sorts last
+        out[uf] = {"name": s["localidade"].get("nome", uf), "value": float(valid[period]),
+                   "ref_date": f"{period[:4]}-{period[4:6]}-01"}
+    if len(out) != 27:
+        raise RuntimeError(f"{len(out)} states from {len(series)} series")
     return out
 
 def states_unemployment():
     errors = []
-    for url in SIDRA_STATE_SOURCES:
-        table = url.split("/t/")[1].split("/")[0]
+    for label, url, kind in STATE_SOURCES:
         try:
-            return _parse_states(get(url, tries=2))
+            data = get(url, tries=2)
+            if kind == "agregados":
+                states = _states_from_agregados(data)
+            else:
+                states = _states_from_sidra(data, named=(kind == "sidra_named"))
+            bad = [uf for uf, x in states.items() if not in_range("desemprego", x["value"])]
+            if bad: raise RuntimeError(f"implausible values for {bad}")
+            return states
         except Exception as e:
-            errors.append(f"table {table}: {str(e)[:150]}")
-    raise RuntimeError("; ".join(errors))
+            errors.append(f"{label}: {str(e)[:200]}")
+    raise RuntimeError(" | ".join(errors))
 
 HISTORY = {  # one-time backfill so charts have a past; the daily job only adds the newest point
     "selic_meta": lambda: sgs_history(432),
@@ -261,7 +287,7 @@ def main():
                   open(f"{OUT}/estados.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
         status["estados_desemprego"] = {"live_fetch": "success", "run_at": stamp, "states": len(states)}
     except Exception as e:
-        status["estados_desemprego"] = {"live_fetch": "failed", "run_at": stamp, "error": str(e)[:300]}
+        status["estados_desemprego"] = {"live_fetch": "failed", "run_at": stamp, "error": str(e)[:900]}
     print("estados_desemprego", status["estados_desemprego"]["live_fetch"])
     json.dump(latest, open(f"{OUT}/latest.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     json.dump(status, open(f"{OUT}/status.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
