@@ -1,56 +1,56 @@
 {
  "selic_meta": {
   "live_fetch": "success",
-  "run_at": "2026-11-04T20:13:02Z",
-  "last_data": "2026-11-04",
+  "run_at": "2026-11-05T01:34:16Z",
+  "last_data": "2026-11-05",
   "age_days": 0,
   "history_backfill": "skipped"
  },
  "ipca_12m": {
   "live_fetch": "success",
-  "run_at": "2026-11-04T20:13:02Z",
+  "run_at": "2026-11-05T01:34:16Z",
   "last_data": "2026-09-01",
-  "age_days": 64,
+  "age_days": 65,
   "history_backfill": "skipped"
  },
  "ptax_usd": {
   "live_fetch": "success",
-  "run_at": "2026-11-04T20:13:02Z",
+  "run_at": "2026-11-05T01:34:16Z",
   "last_data": "2026-11-04",
-  "age_days": 0,
+  "age_days": 1,
   "history_backfill": "skipped"
  },
  "ptax_eur": {
   "live_fetch": "success",
-  "run_at": "2026-11-04T20:13:02Z",
+  "run_at": "2026-11-05T01:34:16Z",
   "last_data": "2026-11-04",
-  "age_days": 0,
+  "age_days": 1,
   "history_backfill": "skipped"
  },
  "desemprego": {
   "live_fetch": "success",
-  "run_at": "2026-11-04T20:13:02Z",
+  "run_at": "2026-11-05T01:34:16Z",
   "last_data": "2026-09-01",
-  "age_days": 64,
+  "age_days": 65,
   "history_backfill": "skipped"
  },
  "divida_bruta": {
   "live_fetch": "success",
-  "run_at": "2026-11-04T20:13:02Z",
+  "run_at": "2026-11-05T01:34:16Z",
   "last_data": "2026-09-01",
-  "age_days": 64,
+  "age_days": 65,
   "history_backfill": "skipped"
  },
  "focus_ipca_2026": {
   "live_fetch": "success",
-  "run_at": "2026-11-04T20:13:02Z",
+  "run_at": "2026-11-05T01:34:16Z",
   "last_data": "2026-10-30",
-  "age_days": 5,
+  "age_days": 6,
   "history_backfill": "skipped"
  },
  "estados_desemprego": {
   "live_fetch": "failed",
-  "run_at": "2026-11-04T20:13:02Z",
+  "run_at": "2026-11-05T01:34:16Z",
   "error": "table 6381: HTTPError: HTTP Error 400: Bad Request; table 4714: expected 27 states, got 0"
  }
 }
