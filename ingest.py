@@ -8,7 +8,7 @@ Writes:
   data/status.json          per-source run log (proof of a live collection)
 A source is only "ok" if THIS run fetched it live. Failures never write a guess.
 """
-import csv, json, os, time, urllib.request
+import csv, json, os, re, time, urllib.request
 from datetime import datetime, timedelta, timezone
 
 OUT = os.path.dirname(os.path.abspath(__file__)) + "/data"
@@ -120,33 +120,37 @@ STATE_UF = {"11":"RO","12":"AC","13":"AM","14":"RR","15":"PA","16":"AP","17":"TO
             "21":"MA","22":"PI","23":"CE","24":"RN","25":"PB","26":"PE","27":"AL","28":"SE","29":"BA",
             "31":"MG","32":"ES","33":"RJ","35":"SP","41":"PR","42":"SC","43":"RS",
             "50":"MS","51":"MT","52":"GO","53":"DF"}
-# State unemployment (27 UFs). Three sources are tried in order; the first that gives all 27 wins.
-# Every failure is recorded in status.json with what IBGE actually returned, so it can be fixed from that.
+# State unemployment (27 UFs). Sources are tried in order; the first that returns all 27 states wins.
+# Table 6468 is IBGE's PNAD Contínua table for state-level data (variable 4099, the unemployment rate).
+# Every failure is recorded in status.json with what IBGE actually returned.
 STATE_SOURCES = [
+    ("SIDRA 6468", "https://apisidra.ibge.gov.br/values/t/6468/n3/all/v/4099/p/last%201", "sidra"),
     ("SIDRA 6381", "https://apisidra.ibge.gov.br/values/t/6381/n3/all/v/4099/p/last%201", "sidra"),
     ("IBGE agregados 6381", "https://servicodados.ibge.gov.br/api/v3/agregados/6381/periodos/-1/variaveis/4099?localidades=N3[all]", "agregados"),
-    ("SIDRA 4714", "https://apisidra.ibge.gov.br/values/t/4714/n3/all/v/all/p/last%201", "sidra_named"),
 ]
 
-def _states_from_sidra(rows, named):
-    out, names, codes = {}, set(), set()
+def _states_from_sidra(rows):
+    # The column holding the state code is not always D1C: with several territorial levels SIDRA
+    # numbers the columns differently. So look for the first D<n>C column whose value is a UF code.
+    out, codes_seen = {}, set()
     for row in rows[1:]:  # index 0 is the header row
-        if named and "taxa de desocupa" not in str(row.get("D2N", "")).lower():
-            names.add(str(row.get("D2N", ""))[:40]); continue
-        code = str(row.get("D1C", "")); codes.add(code)
-        uf = STATE_UF.get(code)
-        if uf is None: continue
+        uf_col = next((k for k, v in row.items() if re.fullmatch(r"D\d+C", k)
+                       and str(v) in STATE_UF), None)
+        if uf_col is None: continue
+        uf = STATE_UF[str(row[uf_col])]; codes_seen.add(str(row[uf_col]))
         try:
             value = float(row["V"])
         except (TypeError, ValueError):
             continue  # unpublished value (SIDRA uses symbols); the count check below catches the gap
-        p = next((v for k, v in row.items() if k.startswith("D") and k.endswith("C")
+        p = next((v for k, v in row.items() if re.fullmatch(r"D\d+C", k)
                   and isinstance(v, str) and len(v) == 6 and v.isdigit()), None)
         if p is None: raise RuntimeError(f"no period code for {uf}")
-        out[uf] = {"name": row.get("D1N", uf), "value": value, "ref_date": f"{p[:4]}-{p[4:6]}-01"}
+        out[uf] = {"name": row.get(uf_col.replace("C", "N"), uf), "value": value,
+                   "ref_date": f"{p[:4]}-{p[4:6]}-01"}
     if len(out) != 27:
-        raise RuntimeError(f"{len(out)} states from {len(rows) - 1} rows; codes seen {sorted(codes)[:6]}; "
-                           f"variable names seen {sorted(names)[:3]}")
+        cols = sorted({k for r in rows[1:4] for k in r})
+        raise RuntimeError(f"{len(out)} states from {len(rows) - 1} rows; state codes seen {sorted(codes_seen)[:6]}; "
+                           f"columns {cols[:14]}")
     return out
 
 def _states_from_agregados(data):
@@ -169,10 +173,7 @@ def states_unemployment():
     for label, url, kind in STATE_SOURCES:
         try:
             data = get(url, tries=2)
-            if kind == "agregados":
-                states = _states_from_agregados(data)
-            else:
-                states = _states_from_sidra(data, named=(kind == "sidra_named"))
+            states = _states_from_agregados(data) if kind == "agregados" else _states_from_sidra(data)
             bad = [uf for uf, x in states.items() if not in_range("desemprego", x["value"])]
             if bad: raise RuntimeError(f"implausible values for {bad}")
             return states
