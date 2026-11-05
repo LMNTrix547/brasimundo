@@ -1,56 +1,56 @@
 {
  "selic_meta": {
   "live_fetch": "success",
-  "run_at": "2026-11-05T10:32:43Z",
+  "run_at": "2026-11-05T10:53:28Z",
   "last_data": "2026-11-05",
   "age_days": 0,
   "history_backfill": "skipped"
  },
  "ipca_12m": {
   "live_fetch": "success",
-  "run_at": "2026-11-05T10:32:43Z",
+  "run_at": "2026-11-05T10:53:28Z",
   "last_data": "2026-09-01",
   "age_days": 65,
   "history_backfill": "skipped"
  },
  "ptax_usd": {
   "live_fetch": "success",
-  "run_at": "2026-11-05T10:32:43Z",
+  "run_at": "2026-11-05T10:53:28Z",
   "last_data": "2026-11-04",
   "age_days": 1,
   "history_backfill": "skipped"
  },
  "ptax_eur": {
   "live_fetch": "success",
-  "run_at": "2026-11-05T10:32:43Z",
+  "run_at": "2026-11-05T10:53:28Z",
   "last_data": "2026-11-04",
   "age_days": 1,
   "history_backfill": "skipped"
  },
  "desemprego": {
   "live_fetch": "success",
-  "run_at": "2026-11-05T10:32:43Z",
+  "run_at": "2026-11-05T10:53:28Z",
   "last_data": "2026-09-01",
   "age_days": 65,
   "history_backfill": "skipped"
  },
  "divida_bruta": {
   "live_fetch": "success",
-  "run_at": "2026-11-05T10:32:43Z",
+  "run_at": "2026-11-05T10:53:28Z",
   "last_data": "2026-09-01",
   "age_days": 65,
   "history_backfill": "skipped"
  },
  "focus_ipca_2026": {
   "live_fetch": "success",
-  "run_at": "2026-11-05T10:32:43Z",
+  "run_at": "2026-11-05T10:53:28Z",
   "last_data": "2026-10-30",
   "age_days": 6,
   "history_backfill": "skipped"
  },
  "estados_desemprego": {
-  "live_fetch": "failed",
-  "run_at": "2026-11-05T10:32:43Z",
-  "error": "SIDRA 6381: HTTPError: HTTP Error 400: Bad Request | IBGE agregados 6381: URLError: <urlopen error timed out> | SIDRA 4714: 0 states from 81 rows; codes seen []; variable names seen ['Densidade demográfica', 'População residente', 'Área da unidade territorial']"
+  "live_fetch": "success",
+  "run_at": "2026-11-05T10:53:28Z",
+  "states": 27
  }
 }

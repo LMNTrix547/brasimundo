@@ -1,0 +1,144 @@
+{
+ "retrieved_at": "2026-11-05T10:53:28Z",
+ "source": "IBGE, PNAD Contínua (desocupação por UF)",
+ "license": "Dados abertos (IBGE)",
+ "verification_level": "N5",
+ "series": "desemprego",
+ "states": {
+  "RO": {
+   "name": "Rondônia",
+   "value": 2.6,
+   "ref_date": "2026-02-01"
+  },
+  "AC": {
+   "name": "Acre",
+   "value": 6.6,
+   "ref_date": "2026-02-01"
+  },
+  "AM": {
+   "name": "Amazonas",
+   "value": 7.5,
+   "ref_date": "2026-02-01"
+  },
+  "RR": {
+   "name": "Roraima",
+   "value": 5.0,
+   "ref_date": "2026-02-01"
+  },
+  "PA": {
+   "name": "Pará",
+   "value": 6.2,
+   "ref_date": "2026-02-01"
+  },
+  "AP": {
+   "name": "Amapá",
+   "value": 9.8,
+   "ref_date": "2026-02-01"
+  },
+  "TO": {
+   "name": "Tocantins",
+   "value": 4.1,
+   "ref_date": "2026-02-01"
+  },
+  "MA": {
+   "name": "Maranhão",
+   "value": 6.0,
+   "ref_date": "2026-02-01"
+  },
+  "PI": {
+   "name": "Piauí",
+   "value": 8.3,
+   "ref_date": "2026-02-01"
+  },
+  "CE": {
+   "name": "Ceará",
+   "value": 6.6,
+   "ref_date": "2026-02-01"
+  },
+  "RN": {
+   "name": "Rio Grande do Norte",
+   "value": 5.6,
+   "ref_date": "2026-02-01"
+  },
+  "PB": {
+   "name": "Paraíba",
+   "value": 5.4,
+   "ref_date": "2026-02-01"
+  },
+  "PE": {
+   "name": "Pernambuco",
+   "value": 8.3,
+   "ref_date": "2026-02-01"
+  },
+  "AL": {
+   "name": "Alagoas",
+   "value": 7.9,
+   "ref_date": "2026-02-01"
+  },
+  "SE": {
+   "name": "Sergipe",
+   "value": 7.9,
+   "ref_date": "2026-02-01"
+  },
+  "BA": {
+   "name": "Bahia",
+   "value": 9.1,
+   "ref_date": "2026-02-01"
+  },
+  "MG": {
+   "name": "Minas Gerais",
+   "value": 3.8,
+   "ref_date": "2026-02-01"
+  },
+  "ES": {
+   "name": "Espírito Santo",
+   "value": 2.3,
+   "ref_date": "2026-02-01"
+  },
+  "RJ": {
+   "name": "Rio de Janeiro",
+   "value": 7.1,
+   "ref_date": "2026-02-01"
+  },
+  "SP": {
+   "name": "São Paulo",
+   "value": 5.4,
+   "ref_date": "2026-02-01"
+  },
+  "PR": {
+   "name": "Paraná",
+   "value": 3.1,
+   "ref_date": "2026-02-01"
+  },
+  "SC": {
+   "name": "Santa Catarina",
+   "value": 2.1,
+   "ref_date": "2026-02-01"
+  },
+  "RS": {
+   "name": "Rio Grande do Sul",
+   "value": 4.2,
+   "ref_date": "2026-02-01"
+  },
+  "MS": {
+   "name": "Mato Grosso do Sul",
+   "value": 2.7,
+   "ref_date": "2026-02-01"
+  },
+  "MT": {
+   "name": "Mato Grosso",
+   "value": 2.2,
+   "ref_date": "2026-02-01"
+  },
+  "GO": {
+   "name": "Goiás",
+   "value": 4.0,
+   "ref_date": "2026-02-01"
+  },
+  "DF": {
+   "name": "Distrito Federal",
+   "value": 6.5,
+   "ref_date": "2026-02-01"
+  }
+ }
+}
