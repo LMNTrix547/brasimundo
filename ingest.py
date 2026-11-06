@@ -234,6 +234,54 @@ def in_range(sid, value):
     lo, hi = PLAUSIBLE.get(sid, (float("-inf"), float("inf")))
     return lo <= value <= hi
 
+# Macro-pressure index: a monthly summary of five measured conditions. Forecasts are left out,
+# and so is the Focus series, which has too little history to join a monthly index.
+# Method: each component is divided by its value in the base month, the five ratios are averaged
+# with equal weights, and the result is multiplied by 100. Higher means more pressure: higher
+# rates, inflation, unemployment and debt, and a weaker real (a higher dollar).
+INDEX_COMPONENTS = [
+    ("selic_meta", "Selic meta"),
+    ("ipca_12m", "IPCA 12 meses"),
+    ("desemprego", "Desemprego"),
+    ("divida_bruta", "Dívida bruta"),
+    ("ptax_usd", "Dólar (PTAX)"),
+]
+
+def _monthly_last(path, today):
+    best = {}
+    if not os.path.exists(path): return {}
+    with open(path, newline="", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            d = r["ref_date"]
+            if d > today: continue  # future-dated rows are never facts
+            try: v = float(r["value"])
+            except (TypeError, ValueError): continue
+            m = d[:7]
+            if m not in best or d > best[m][0]: best[m] = (d, v)
+    return {m: v for m, (d, v) in best.items()}
+
+def build_pressure_index():
+    today = NOW.date().isoformat()
+    monthly = {k: _monthly_last(f"{OUT}/history/{k}.csv", today) for k, _ in INDEX_COMPONENTS}
+    common = sorted(set.intersection(*(set(m) for m in monthly.values())))
+    if len(common) < 6: raise RuntimeError(f"only {len(common)} months with all five components")
+    base = common[0]
+    n = len(INDEX_COMPONENTS)
+    series = [{"month": m, "value": round(100 * sum(monthly[k][m] / monthly[k][base] for k, _ in INDEX_COMPONENTS) / n, 2)}
+              for m in common]
+    components = [{"key": k, "label": lab, "weight": round(1 / n, 4), "base": monthly[k][base],
+                   "latest": monthly[k][common[-1]]} for k, lab in INDEX_COMPONENTS]
+    stamp = NOW.strftime("%Y-%m-%dT%H:%M:%SZ")
+    doc = {"name": "Índice de pressão macroeconômica", "base_month": base, "base_value": 100,
+           "latest_month": common[-1], "components": components, "series": series, "months": len(series),
+           "retrieved_at": stamp, "source": "Derivado de séries oficiais (Banco Central do Brasil e IBGE)",
+           "license": LIC, "verification_level": "N5 (derivado)"}
+    json.dump(doc, open(f"{OUT}/indice_pressao.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    with open(f"{OUT}/indice_pressao.csv", "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f); w.writerow(["month", "value"])
+        for row in series: w.writerow([row["month"], row["value"]])
+    return len(series)
+
 def load(path, default):
     try:
         with open(path, encoding="utf-8") as f: return json.load(f)
@@ -304,6 +352,12 @@ def main():
         status["estados_desemprego"] = {"live_fetch": "failed", "run_at": stamp, "error": str(e)[:900]}
     print("estados_desemprego", status["estados_desemprego"]["live_fetch"])
     json.dump(latest, open(f"{OUT}/latest.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    json.dump(status, open(f"{OUT}/status.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    try:
+        status["indice_pressao"] = {"derived": "success", "run_at": stamp, "months": build_pressure_index()}
+    except Exception as e:
+        status["indice_pressao"] = {"derived": "failed", "run_at": stamp, "error": str(e)[:300]}
+    print("indice_pressao", status["indice_pressao"]["derived"])
     json.dump(status, open(f"{OUT}/status.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     if not any(s["live_fetch"] == "success" for s in status.values()):
         raise SystemExit("ALL sources failed; see data/status.json")  # red X in GitHub Actions
