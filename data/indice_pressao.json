@@ -1,0 +1,146 @@
+{
+ "name": "Índice de pressão macroeconômica",
+ "base_month": "2024-10",
+ "base_value": 100,
+ "latest_month": "2026-09",
+ "components": [
+  {
+   "key": "selic_meta",
+   "label": "Selic meta",
+   "weight": 0.2,
+   "base": 10.75,
+   "latest": 13.75
+  },
+  {
+   "key": "ipca_12m",
+   "label": "IPCA 12 meses",
+   "weight": 0.2,
+   "base": 4.76,
+   "latest": 4.58
+  },
+  {
+   "key": "desemprego",
+   "label": "Desemprego",
+   "weight": 0.2,
+   "base": 6.2,
+   "latest": 5.2
+  },
+  {
+   "key": "divida_bruta",
+   "label": "Dívida bruta",
+   "weight": 0.2,
+   "base": 77.38,
+   "latest": 82.93
+  },
+  {
+   "key": "ptax_usd",
+   "label": "Dólar (PTAX)",
+   "weight": 0.2,
+   "base": 5.7779,
+   "latest": 5.1809
+  }
+ ],
+ "series": [
+  {
+   "month": "2024-10",
+   "value": 100.0
+  },
+  {
+   "month": "2024-11",
+   "value": 102.05
+  },
+  {
+   "month": "2024-12",
+   "value": 104.23
+  },
+  {
+   "month": "2025-01",
+   "value": 104.47
+  },
+  {
+   "month": "2025-02",
+   "value": 107.68
+  },
+  {
+   "month": "2025-03",
+   "value": 111.52
+  },
+  {
+   "month": "2025-04",
+   "value": 110.18
+  },
+  {
+   "month": "2025-05",
+   "value": 109.13
+  },
+  {
+   "month": "2025-06",
+   "value": 107.71
+  },
+  {
+   "month": "2025-07",
+   "value": 107.29
+  },
+  {
+   "month": "2025-08",
+   "value": 106.29
+  },
+  {
+   "month": "2025-09",
+   "value": 106.22
+  },
+  {
+   "month": "2025-10",
+   "value": 103.86
+  },
+  {
+   "month": "2025-11",
+   "value": 102.29
+  },
+  {
+   "month": "2025-12",
+   "value": 101.63
+  },
+  {
+   "month": "2026-01",
+   "value": 102.43
+  },
+  {
+   "month": "2026-02",
+   "value": 100.9
+  },
+  {
+   "month": "2026-03",
+   "value": 103.23
+  },
+  {
+   "month": "2026-04",
+   "value": 102.1
+  },
+  {
+   "month": "2026-05",
+   "value": 103.32
+  },
+  {
+   "month": "2026-06",
+   "value": 102.53
+  },
+  {
+   "month": "2026-07",
+   "value": 101.18
+  },
+  {
+   "month": "2026-08",
+   "value": 100.23
+  },
+  {
+   "month": "2026-09",
+   "value": 100.97
+  }
+ ],
+ "months": 24,
+ "retrieved_at": "2026-11-06T10:11:56Z",
+ "source": "Derivado de séries oficiais (Banco Central do Brasil e IBGE)",
+ "license": "Dados abertos (Banco Central do Brasil)",
+ "verification_level": "N5 (derivado)"
+}
