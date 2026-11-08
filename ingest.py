@@ -181,6 +181,57 @@ def states_unemployment():
             errors.append(f"{label}: {str(e)[:200]}")
     raise RuntimeError(" | ".join(errors))
 
+# Monthly earnings per worker by state: IBGE, PNAD Contínua, "rendimento médio real habitual de todos
+# os trabalhos" (SIDRA table 6390). Two sources are tried; the first that gives all 27 states wins.
+# Massa de rendimento, nominal and "efetivamente recebido" series are excluded on purpose.
+SALARIO_SOURCES = [
+    ("SIDRA 6390 com Brasil", "https://apisidra.ibge.gov.br/values/t/6390/n1/all/n3/all/v/all/p/last%201", "sidra"),
+    ("SIDRA 6390 só UFs", "https://apisidra.ibge.gov.br/values/t/6390/n3/all/v/all/p/last%201", "sidra"),
+]
+
+def _salario_rows(rows):
+    out = {}
+    for row in rows[1:]:  # index 0 is the header row
+        names = {k: str(v) for k, v in row.items() if re.fullmatch(r"D\d+N", k)}
+        var = next((v for v in names.values() if "rendimento m" in v.lower()), None)
+        if var is None: continue
+        lv = var.lower()
+        if not ("habitual" in lv and "todos os trabalhos" in lv and "real" in lv): continue
+        if any(x in lv for x in ("massa", "efetiv", "nominal")): continue
+        code_col = next((k for k, v in row.items() if re.fullmatch(r"D\d+C", k)
+                         and (str(v) in STATE_UF or (str(v) == "1" and names.get(k.replace("C", "N")) == "Brasil"))), None)
+        if code_col is None: continue
+        code = str(row[code_col])
+        key = "BR" if code == "1" else STATE_UF[code]
+        try:
+            value = float(row["V"])
+        except (TypeError, ValueError):
+            continue
+        p = next((v for k, v in row.items() if re.fullmatch(r"D\d+C", k)
+                  and isinstance(v, str) and len(v) == 6 and v.isdigit()), None)
+        if p is None: raise RuntimeError(f"no period code for {key}")
+        totals = sum(1 for v in names.values() if v.strip().lower() == "total")
+        if key not in out or totals > out[key]["_totals"]:
+            out[key] = {"name": names.get(code_col.replace("C", "N"), key), "value": value,
+                        "ref_date": f"{p[:4]}-{p[4:6]}-01", "_totals": totals}
+    for v in out.values(): v.pop("_totals", None)
+    states = [k for k in out if k != "BR"]
+    if len(states) != 27:
+        seen = sorted({v for r in rows[1:4] for k, v in r.items() if re.fullmatch(r"D\d+N", k)})[:8]
+        raise RuntimeError(f"{len(states)} states with the measure from {len(rows) - 1} rows; names seen {seen}")
+    bad = [k for k, v in out.items() if not (500 <= v["value"] <= 20000)]
+    if bad: raise RuntimeError(f"implausible earnings for {bad}")
+    return out
+
+def salarios_uf():
+    errors = []
+    for label, url, kind in SALARIO_SOURCES:
+        try:
+            return _salario_rows(get(url, tries=2))
+        except Exception as e:
+            errors.append(f"{label}: {str(e)[:200]}")
+    raise RuntimeError(" | ".join(errors))
+
 HISTORY = {  # one-time backfill so charts have a past; the daily job only adds the newest point
     "selic_meta": lambda: sgs_history(432),
     "ipca_12m": lambda: sgs_history(13522),
@@ -351,6 +402,17 @@ def main():
     except Exception as e:
         status["estados_desemprego"] = {"live_fetch": "failed", "run_at": stamp, "error": str(e)[:900]}
     print("estados_desemprego", status["estados_desemprego"]["live_fetch"])
+    # Monthly earnings per worker by state, from the same job.
+    try:
+        salarios = salarios_uf()
+        json.dump({"retrieved_at": stamp, "source": "IBGE, PNAD Contínua (rendimento médio real habitual de todos os trabalhos)",
+                   "license": "Dados abertos (IBGE)", "verification_level": "N5", "measure": "por trabalhador, R$ reais mensais",
+                   "national": salarios.get("BR"), "states": {k: v for k, v in salarios.items() if k != "BR"}},
+                  open(f"{OUT}/salarios.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        status["salarios_uf"] = {"live_fetch": "success", "run_at": stamp, "states": len(salarios) - (1 if "BR" in salarios else 0)}
+    except Exception as e:
+        status["salarios_uf"] = {"live_fetch": "failed", "run_at": stamp, "error": str(e)[:900]}
+    print("salarios_uf", status["salarios_uf"]["live_fetch"])
     json.dump(latest, open(f"{OUT}/latest.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     json.dump(status, open(f"{OUT}/status.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     try:
@@ -359,7 +421,7 @@ def main():
         status["indice_pressao"] = {"derived": "failed", "run_at": stamp, "error": str(e)[:300]}
     print("indice_pressao", status["indice_pressao"]["derived"])
     json.dump(status, open(f"{OUT}/status.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
-    if not any(s["live_fetch"] == "success" for s in status.values()):
+    if not any(s.get("live_fetch") == "success" for s in status.values()):
         raise SystemExit("ALL sources failed; see data/status.json")  # red X in GitHub Actions
 
 if __name__ == "__main__":
