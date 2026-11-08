@@ -181,13 +181,11 @@ def states_unemployment():
             errors.append(f"{label}: {str(e)[:200]}")
     raise RuntimeError(" | ".join(errors))
 
-# Monthly earnings per worker by state: IBGE, PNAD Contínua, "rendimento médio real habitual de todos
-# os trabalhos" (SIDRA table 6390). Two sources are tried; the first that gives all 27 states wins.
-# Massa de rendimento, nominal and "efetivamente recebido" series are excluded on purpose.
-SALARIO_SOURCES = [
-    ("SIDRA 6390 com Brasil", "https://apisidra.ibge.gov.br/values/t/6390/n1/all/n3/all/v/all/p/last%201", "sidra"),
-    ("SIDRA 6390 só UFs", "https://apisidra.ibge.gov.br/values/t/6390/n3/all/v/all/p/last%201", "sidra"),
-]
+# Monthly earnings per worker by state (IBGE, PNAD Contínua, "rendimento médio real habitual de todos os
+# trabalhos"). The SIDRA table for this breakdown is not confirmed yet: table 6390 holds earnings by economic
+# sector, not by state, so it is no longer queried. Until a state table is confirmed, this job records the
+# gap in status.json instead of guessing.
+SALARIO_SOURCES = []
 
 def _salario_rows(rows):
     out = {}
@@ -224,6 +222,8 @@ def _salario_rows(rows):
     return out
 
 def salarios_uf():
+    if not SALARIO_SOURCES:
+        raise RuntimeError("tabela SIDRA por UF para rendimento médio ainda não confirmada")
     errors = []
     for label, url, kind in SALARIO_SOURCES:
         try:
