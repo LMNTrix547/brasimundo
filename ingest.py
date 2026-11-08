@@ -181,11 +181,22 @@ def states_unemployment():
             errors.append(f"{label}: {str(e)[:200]}")
     raise RuntimeError(" | ".join(errors))
 
-# Monthly earnings per worker by state (IBGE, PNAD Contínua, "rendimento médio real habitual de todos os
-# trabalhos"). The SIDRA table for this breakdown is not confirmed yet: table 6390 holds earnings by economic
-# sector, not by state, so it is no longer queried. Until a state table is confirmed, this job records the
-# gap in status.json instead of guessing.
-SALARIO_SOURCES = []
+# Average earnings per worker by state (IBGE, SIDRA table 4660): real income usually received from all jobs.
+# The table is annual: the period is a year (2025), so each value is that year's average, in R$ per month.
+# Both sources list the 27 states; the first that works wins.
+SALARIO_SOURCES = [
+    ("SIDRA 4660 com Brasil", "https://apisidra.ibge.gov.br/values/t/4660/n1/all/n3/all/v/all/p/last%201", "sidra"),
+    ("SIDRA 4660 só UFs", "https://apisidra.ibge.gov.br/values/t/4660/n3/all/v/all/p/last%201", "sidra"),
+]
+
+def _period_of(row):
+    # Monthly tables give YYYYMM codes; the annual table gives a year (2025) that matches its own name.
+    for k, v in row.items():
+        if not re.fullmatch(r"D\d+C", k) or not isinstance(v, str): continue
+        if len(v) == 6 and v.isdigit(): return f"{v[:4]}-{v[4:6]}-01"
+        if re.fullmatch(r"(19|20)\d\d", v) and str(row.get(k.replace("C", "N"), "")) == v:
+            return f"{v}-12-31"
+    return None
 
 def _salario_rows(rows):
     out = {}
@@ -205,13 +216,12 @@ def _salario_rows(rows):
             value = float(row["V"])
         except (TypeError, ValueError):
             continue
-        p = next((v for k, v in row.items() if re.fullmatch(r"D\d+C", k)
-                  and isinstance(v, str) and len(v) == 6 and v.isdigit()), None)
-        if p is None: raise RuntimeError(f"no period code for {key}")
+        ref = _period_of(row)
+        if ref is None: raise RuntimeError(f"no period code for {key}")
         totals = sum(1 for v in names.values() if v.strip().lower() == "total")
         if key not in out or totals > out[key]["_totals"]:
             out[key] = {"name": names.get(code_col.replace("C", "N"), key), "value": value,
-                        "ref_date": f"{p[:4]}-{p[4:6]}-01", "_totals": totals}
+                        "ref_date": ref, "_totals": totals}
     for v in out.values(): v.pop("_totals", None)
     states = [k for k in out if k != "BR"]
     if len(states) != 27:
