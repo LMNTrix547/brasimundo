@@ -1,0 +1,149 @@
+{
+ "retrieved_at": "2026-11-08T23:34:07Z",
+ "source": "IBGE, PNAD Contínua (rendimento médio real habitual de todos os trabalhos)",
+ "license": "Dados abertos (IBGE)",
+ "verification_level": "N5",
+ "measure": "por trabalhador, R$ reais mensais",
+ "national": {
+  "name": "Brasil",
+  "value": 3560.0,
+  "ref_date": "2025-12-31"
+ },
+ "states": {
+  "RO": {
+   "name": "Rondônia",
+   "value": 3362.0,
+   "ref_date": "2025-12-31"
+  },
+  "AC": {
+   "name": "Acre",
+   "value": 2794.0,
+   "ref_date": "2025-12-31"
+  },
+  "AM": {
+   "name": "Amazonas",
+   "value": 2733.0,
+   "ref_date": "2025-12-31"
+  },
+  "RR": {
+   "name": "Roraima",
+   "value": 3438.0,
+   "ref_date": "2025-12-31"
+  },
+  "PA": {
+   "name": "Pará",
+   "value": 2508.0,
+   "ref_date": "2025-12-31"
+  },
+  "AP": {
+   "name": "Amapá",
+   "value": 3089.0,
+   "ref_date": "2025-12-31"
+  },
+  "TO": {
+   "name": "Tocantins",
+   "value": 3129.0,
+   "ref_date": "2025-12-31"
+  },
+  "MA": {
+   "name": "Maranhão",
+   "value": 2228.0,
+   "ref_date": "2025-12-31"
+  },
+  "PI": {
+   "name": "Piauí",
+   "value": 2561.0,
+   "ref_date": "2025-12-31"
+  },
+  "CE": {
+   "name": "Ceará",
+   "value": 2394.0,
+   "ref_date": "2025-12-31"
+  },
+  "RN": {
+   "name": "Rio Grande do Norte",
+   "value": 3003.0,
+   "ref_date": "2025-12-31"
+  },
+  "PB": {
+   "name": "Paraíba",
+   "value": 2577.0,
+   "ref_date": "2025-12-31"
+  },
+  "PE": {
+   "name": "Pernambuco",
+   "value": 2666.0,
+   "ref_date": "2025-12-31"
+  },
+  "AL": {
+   "name": "Alagoas",
+   "value": 2531.0,
+   "ref_date": "2025-12-31"
+  },
+  "SE": {
+   "name": "Sergipe",
+   "value": 2855.0,
+   "ref_date": "2025-12-31"
+  },
+  "BA": {
+   "name": "Bahia",
+   "value": 2284.0,
+   "ref_date": "2025-12-31"
+  },
+  "MG": {
+   "name": "Minas Gerais",
+   "value": 3350.0,
+   "ref_date": "2025-12-31"
+  },
+  "ES": {
+   "name": "Espírito Santo",
+   "value": 3497.0,
+   "ref_date": "2025-12-31"
+  },
+  "RJ": {
+   "name": "Rio de Janeiro",
+   "value": 4177.0,
+   "ref_date": "2025-12-31"
+  },
+  "SP": {
+   "name": "São Paulo",
+   "value": 4190.0,
+   "ref_date": "2025-12-31"
+  },
+  "PR": {
+   "name": "Paraná",
+   "value": 4083.0,
+   "ref_date": "2025-12-31"
+  },
+  "SC": {
+   "name": "Santa Catarina",
+   "value": 4091.0,
+   "ref_date": "2025-12-31"
+  },
+  "RS": {
+   "name": "Rio Grande do Sul",
+   "value": 3916.0,
+   "ref_date": "2025-12-31"
+  },
+  "MS": {
+   "name": "Mato Grosso do Sul",
+   "value": 3727.0,
+   "ref_date": "2025-12-31"
+  },
+  "MT": {
+   "name": "Mato Grosso",
+   "value": 3688.0,
+   "ref_date": "2025-12-31"
+  },
+  "GO": {
+   "name": "Goiás",
+   "value": 3628.0,
+   "ref_date": "2025-12-31"
+  },
+  "DF": {
+   "name": "Distrito Federal",
+   "value": 6320.0,
+   "ref_date": "2025-12-31"
+  }
+ }
+}
