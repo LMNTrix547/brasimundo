@@ -376,6 +376,69 @@ def backfill(sid, stamp):
     except Exception as e:  # never fail the run because charts could not be backfilled
         return "failed:" + str(e)[:150]
 
+# ---- Data quality (roadmap phase 1) -------------------------------------------------------------
+# Each history file is cleaned (future-dated and duplicate rows are removed, order is fixed) and then
+# summarised. The report separates collection status (did the last run fetch it?) from observation
+# status (is the underlying number current?), and flags gaps in monthly series.
+HISTORY_FIELDS = ["ref_date", "value", "retrieved_at", "verification_level"]
+
+def clean_history(sid, today):
+    p = f"{OUT}/history/{sid}.csv"
+    if not os.path.exists(p): return {"removed_future": 0, "removed_duplicates": 0, "rows": 0}
+    with open(p, newline="", encoding="utf-8") as f: rows = list(csv.DictReader(f))
+    kept, future, dup = {}, 0, 0
+    for r in rows:
+        d = r["ref_date"]
+        if d > today: future += 1; continue      # a scheduled or future value is never a fact
+        if d in kept: dup += 1; continue
+        kept[d] = r
+    ordered = [kept[d] for d in sorted(kept)]
+    if future or dup or [r["ref_date"] for r in rows] != [r["ref_date"] for r in ordered]:
+        with open(p, "w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=HISTORY_FIELDS, extrasaction="ignore")
+            w.writeheader(); w.writerows(ordered)
+    return {"removed_future": future, "removed_duplicates": dup, "rows": len(ordered)}
+
+def monthly_gaps(dates):
+    months = sorted({d[:7] for d in dates})
+    if len(months) < 2: return 0
+    y0, m0 = map(int, months[0].split("-")); y1, m1 = map(int, months[-1].split("-"))
+    return (y1 - y0) * 12 + (m1 - m0) + 1 - len(months)
+
+def quality_report(stamp):
+    today = NOW.date().isoformat()
+    latest = load(f"{OUT}/latest.json", {})
+    status = load(f"{OUT}/status.json", {})
+    report = {"generated_at": stamp, "datasets": {}}
+    for sid, name, unit, freq, max_age, _ in SERIES:
+        cl = clean_history(sid, today)
+        p = f"{OUT}/history/{sid}.csv"
+        dates = []
+        if os.path.exists(p):
+            with open(p, newline="", encoding="utf-8") as f: dates = [r["ref_date"] for r in csv.DictReader(f)]
+        lat = latest.get(sid, {})
+        retrieved_day = (lat.get("retrieved_at") or "")[:10]
+        report["datasets"][sid] = {
+            "name": name, "unit": unit, "frequency": freq,
+            "observations": len(dates),
+            "first_observation": min(dates) if dates else None,
+            "last_observation": max(dates) if dates else None,
+            "missing_months": monthly_gaps(dates) if freq in ("mensal", "trimestre móvel") else None,
+            "future_rows_removed": cl["removed_future"],
+            "duplicates_removed": cl["removed_duplicates"],
+            "observation_after_retrieval": bool(lat.get("ref_date") and retrieved_day and lat["ref_date"] > retrieved_day),
+            "collection": status.get(sid, {}).get("live_fetch", "sem registro"),
+            "observation_status": lat.get("data_status", "sem dado"),
+            "source": lat.get("source"), "license": lat.get("license"),
+        }
+    for key, label in [("estados_desemprego", "Desemprego por UF"), ("salarios_uf", "Rendimento por UF"),
+                       ("indice_pressao", "Índice de pressão macroeconômica")]:
+        entry = status.get(key, {})
+        report["datasets"][key] = {"name": label, "collection": entry.get("live_fetch", entry.get("derived", "sem registro")),
+                                   "run_at": entry.get("run_at")}
+    json.dump(report, open(f"{OUT}/quality.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    return len(report["datasets"])
+
 def main():
     os.makedirs(f"{OUT}/history", exist_ok=True)
     latest = load(f"{OUT}/latest.json", {})
@@ -430,6 +493,11 @@ def main():
     except Exception as e:
         status["indice_pressao"] = {"derived": "failed", "run_at": stamp, "error": str(e)[:300]}
     print("indice_pressao", status["indice_pressao"]["derived"])
+    json.dump(status, open(f"{OUT}/status.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    try:
+        status["quality"] = {"derived": "success", "run_at": stamp, "datasets": quality_report(stamp)}
+    except Exception as e:
+        status["quality"] = {"derived": "failed", "run_at": stamp, "error": str(e)[:300]}
     json.dump(status, open(f"{OUT}/status.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     if not any(s.get("live_fetch") == "success" for s in status.values()):
         raise SystemExit("ALL sources failed; see data/status.json")  # red X in GitHub Actions
