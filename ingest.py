@@ -107,11 +107,16 @@ def unemployment_history():
         out.append((f"{p[:4]}-{p[4:6]}-01", float(row["V"])))
     return sorted(out)
 
+FOCUS_ALL = ("https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+             "ExpectativasMercadoAnuais?$filter=Indicador%20eq%20'IPCA'%20and%20DataReferencia%20eq%20'2026'"
+             "&$orderby=Data%20asc&$top=2000&$format=json")
+
 def focus_history():
-    url = FOCUS.replace("$top=1", "$top=104")
     out = {}
-    for r in get(url)["value"]:  # newest first: keep the first row per date
-        out.setdefault(r["Data"][:10], float(r["Mediana"]))
+    for r in get(FOCUS_ALL)["value"]:
+        d = r["Data"][:10]
+        if d >= "2025-01-01": out.setdefault(d, float(r["Mediana"]))  # one value per survey date
+    if not out: raise RuntimeError("no Focus survey rows from 2025 on")
     return sorted(out.items())
 
 # Unemployment for each of the 27 states (IBGE SIDRA, table 6381, territory level UF).
@@ -250,15 +255,19 @@ HISTORY = {  # one-time backfill so charts have a past; the daily job only adds 
     "ptax_eur": lambda: ptax_history("EUR"),
     "desemprego": unemployment_history,
     "focus_ipca_2026": focus_history,
+    "balanca_comercial": lambda: sgs_history(BALANCA_SGS),
 }
 
 # Banco Central, balança comercial (bens), Balanço de Pagamentos, mensal, US$ milhões (SGS 22707).
 # The indicator is the year-to-date balance: the sum of the monthly values for the latest year.
 BALANCA_SGS = 22707
 
+_BALANCA = {"monthly": []}  # the monthly series behind the year-to-date figure
+
 def balanca_ytd():
     rows = sgs_history(BALANCA_SGS)
     if not rows: raise RuntimeError("no rows from SGS 22707")
+    _BALANCA["monthly"] = rows
     year = max(d[:4] for d, _ in rows)
     ytd = [(d, v) for d, v in rows if d[:4] == year]
     return sum(v for _, v in ytd), max(d for d, _ in ytd)
@@ -361,6 +370,26 @@ def append_history(sid, ref, value, retrieved):
         if new: w.writerow(["ref_date", "value", "retrieved_at", "verification_level"])
         w.writerow([ref, value, retrieved, "N5"])
 
+HISTORY_VERSION = {"balanca_comercial": 2, "focus_ipca_2026": 2}
+
+def migrate_history_once(sid, stamp):
+    """Rebuilds a series' history once, from the source, when the stored history is known to be wrong.
+    The old file is only replaced after the new rows arrive, so a failed request keeps what was there."""
+    v = HISTORY_VERSION.get(sid)
+    if not v: return "n/a"
+    marker = f"{OUT}/history/{sid}.v{v}"
+    if os.path.exists(marker): return "done"
+    try:
+        rows = [(d, val) for d, val in HISTORY[sid]() if in_range(sid, val)]
+    except Exception as e:
+        return "pending: " + str(e)[:120]
+    if not rows: return "pending: no rows"
+    p = f"{OUT}/history/{sid}.csv"
+    if os.path.exists(p): os.remove(p)
+    for d, val in rows: append_history(sid, d, val, stamp)
+    open(marker, "w").write(stamp)
+    return f"rebuilt: {len(rows)} rows from {rows[0][0]}"
+
 def backfill(sid, stamp):
     fn = HISTORY.get(sid)
     if not fn: return "n/a"
@@ -443,6 +472,7 @@ def main():
     os.makedirs(f"{OUT}/history", exist_ok=True)
     latest = load(f"{OUT}/latest.json", {})
     status, stamp = {}, NOW.strftime("%Y-%m-%dT%H:%M:%SZ")
+    status["history_migration"] = {sid: migrate_history_once(sid, stamp) for sid in HISTORY_VERSION}
     for sid, name, unit, freq, max_age, fetch in SERIES:
         try:
             value, ref = fetch()
@@ -454,7 +484,12 @@ def main():
                            "license": LIC, "verification_level": "N5", "frequency": freq,
                            "data_status": "stale" if age > max_age else "ok"}
             bf = backfill(sid, stamp)
-            append_history(sid, ref, value, stamp)
+            if sid == "balanca_comercial":
+                # history keeps monthly values; the year-to-date total stays in latest.json only
+                monthly = dict(_BALANCA["monthly"])
+                if ref in monthly: append_history(sid, ref, monthly[ref], stamp)
+            else:
+                append_history(sid, ref, value, stamp)
             status[sid] = {"live_fetch": "success", "run_at": stamp, "last_data": ref, "age_days": age,
                            "history_backfill": bf}
         except Exception as e:
