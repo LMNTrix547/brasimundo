@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-11-09T00:28:32Z",
+ "generated_at": "2026-11-10T03:41:19Z",
  "datasets": {
   "selic_meta": {
    "name": "Selic meta (SGS 432)",
    "unit": "% a.a.",
    "frequency": "a cada decisão",
-   "observations": 739,
+   "observations": 740,
    "first_observation": "2024-10-31",
-   "last_observation": "2026-11-09",
+   "last_observation": "2026-11-10",
    "missing_months": null,
    "future_rows_removed": 0,
    "duplicates_removed": 0,
@@ -37,9 +37,9 @@
    "name": "PTAX dólar, venda",
    "unit": "R$",
    "frequency": "diária",
-   "observations": 505,
+   "observations": 506,
    "first_observation": "2024-10-31",
-   "last_observation": "2026-11-06",
+   "last_observation": "2026-11-09",
    "missing_months": null,
    "future_rows_removed": 0,
    "duplicates_removed": 0,
@@ -53,9 +53,9 @@
    "name": "PTAX euro, venda",
    "unit": "R$",
    "frequency": "diária",
-   "observations": 505,
+   "observations": 506,
    "first_observation": "2024-10-31",
-   "last_observation": "2026-11-06",
+   "last_observation": "2026-11-09",
    "missing_months": null,
    "future_rows_removed": 0,
    "duplicates_removed": 0,
@@ -101,9 +101,9 @@
    "name": "Focus: IPCA 2026, mediana",
    "unit": "%",
    "frequency": "semanal",
-   "observations": 53,
+   "observations": 54,
    "first_observation": "2026-08-11",
-   "last_observation": "2026-10-30",
+   "last_observation": "2026-11-06",
    "missing_months": null,
    "future_rows_removed": 0,
    "duplicates_removed": 0,
@@ -132,17 +132,17 @@
   "estados_desemprego": {
    "name": "Desemprego por UF",
    "collection": "success",
-   "run_at": "2026-11-09T00:28:32Z"
+   "run_at": "2026-11-10T03:41:19Z"
   },
   "salarios_uf": {
    "name": "Rendimento por UF",
    "collection": "success",
-   "run_at": "2026-11-09T00:28:32Z"
+   "run_at": "2026-11-10T03:41:19Z"
   },
   "indice_pressao": {
    "name": "Índice de pressão macroeconômica",
    "collection": "success",
-   "run_at": "2026-11-09T00:28:32Z"
+   "run_at": "2026-11-10T03:41:19Z"
   }
  }
 }
