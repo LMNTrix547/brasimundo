@@ -1,82 +1,82 @@
 {
  "history_migration": {
-  "balanca_comercial": "rebuilt: 23 rows from 2024-11-01",
-  "focus_ipca_2026": "rebuilt: 253 rows from 2025-01-02"
+  "balanca_comercial": "done",
+  "focus_ipca_2026": "done"
  },
  "selic_meta": {
   "live_fetch": "success",
-  "run_at": "2026-11-10T23:25:41Z",
-  "last_data": "2026-11-10",
+  "run_at": "2026-11-11T01:20:43Z",
+  "last_data": "2026-11-11",
   "age_days": 0,
   "history_backfill": "skipped"
  },
  "ipca_12m": {
   "live_fetch": "success",
-  "run_at": "2026-11-10T23:25:41Z",
+  "run_at": "2026-11-11T01:20:43Z",
   "last_data": "2026-09-01",
-  "age_days": 70,
+  "age_days": 71,
   "history_backfill": "skipped"
  },
  "ptax_usd": {
   "live_fetch": "success",
-  "run_at": "2026-11-10T23:25:41Z",
+  "run_at": "2026-11-11T01:20:43Z",
   "last_data": "2026-11-10",
-  "age_days": 0,
+  "age_days": 1,
   "history_backfill": "skipped"
  },
  "ptax_eur": {
   "live_fetch": "success",
-  "run_at": "2026-11-10T23:25:41Z",
+  "run_at": "2026-11-11T01:20:43Z",
   "last_data": "2026-11-10",
-  "age_days": 0,
+  "age_days": 1,
   "history_backfill": "skipped"
  },
  "desemprego": {
   "live_fetch": "success",
-  "run_at": "2026-11-10T23:25:41Z",
+  "run_at": "2026-11-11T01:20:43Z",
   "last_data": "2026-09-01",
-  "age_days": 70,
+  "age_days": 71,
   "history_backfill": "skipped"
  },
  "divida_bruta": {
   "live_fetch": "success",
-  "run_at": "2026-11-10T23:25:41Z",
+  "run_at": "2026-11-11T01:20:43Z",
   "last_data": "2026-09-01",
-  "age_days": 70,
+  "age_days": 71,
   "history_backfill": "skipped"
  },
  "focus_ipca_2026": {
   "live_fetch": "success",
-  "run_at": "2026-11-10T23:25:41Z",
+  "run_at": "2026-11-11T01:20:43Z",
   "last_data": "2026-11-06",
-  "age_days": 4,
+  "age_days": 5,
   "history_backfill": "skipped"
  },
  "balanca_comercial": {
   "live_fetch": "success",
-  "run_at": "2026-11-10T23:25:41Z",
+  "run_at": "2026-11-11T01:20:43Z",
   "last_data": "2026-09-01",
-  "age_days": 70,
+  "age_days": 71,
   "history_backfill": "skipped"
  },
  "estados_desemprego": {
   "live_fetch": "success",
-  "run_at": "2026-11-10T23:25:41Z",
+  "run_at": "2026-11-11T01:20:43Z",
   "states": 27
  },
  "salarios_uf": {
   "live_fetch": "success",
-  "run_at": "2026-11-10T23:25:41Z",
+  "run_at": "2026-11-11T01:20:43Z",
   "states": 27
  },
  "indice_pressao": {
   "derived": "success",
-  "run_at": "2026-11-10T23:25:41Z",
+  "run_at": "2026-11-11T01:20:43Z",
   "months": 24
  },
  "quality": {
   "derived": "success",
-  "run_at": "2026-11-10T23:25:41Z",
+  "run_at": "2026-11-11T01:20:43Z",
   "datasets": 11
  }
 }

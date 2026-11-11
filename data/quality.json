@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-11-10T23:25:41Z",
+ "generated_at": "2026-11-11T01:20:43Z",
  "datasets": {
   "selic_meta": {
    "name": "Selic meta (SGS 432)",
    "unit": "% a.a.",
    "frequency": "a cada decisão",
-   "observations": 740,
+   "observations": 741,
    "first_observation": "2024-10-31",
-   "last_observation": "2026-11-10",
+   "last_observation": "2026-11-11",
    "missing_months": null,
    "future_rows_removed": 0,
    "duplicates_removed": 0,
@@ -132,17 +132,17 @@
   "estados_desemprego": {
    "name": "Desemprego por UF",
    "collection": "success",
-   "run_at": "2026-11-10T23:25:41Z"
+   "run_at": "2026-11-11T01:20:43Z"
   },
   "salarios_uf": {
    "name": "Rendimento por UF",
    "collection": "success",
-   "run_at": "2026-11-10T23:25:41Z"
+   "run_at": "2026-11-11T01:20:43Z"
   },
   "indice_pressao": {
    "name": "Índice de pressão macroeconômica",
    "collection": "success",
-   "run_at": "2026-11-10T23:25:41Z"
+   "run_at": "2026-11-11T01:20:43Z"
   }
  }
 }
