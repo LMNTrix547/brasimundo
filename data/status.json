@@ -5,78 +5,78 @@
  },
  "selic_meta": {
   "live_fetch": "success",
-  "run_at": "2026-11-11T01:20:43Z",
-  "last_data": "2026-11-11",
+  "run_at": "2026-11-12T02:21:59Z",
+  "last_data": "2026-11-12",
   "age_days": 0,
   "history_backfill": "skipped"
  },
  "ipca_12m": {
   "live_fetch": "success",
-  "run_at": "2026-11-11T01:20:43Z",
+  "run_at": "2026-11-12T02:21:59Z",
   "last_data": "2026-09-01",
-  "age_days": 71,
+  "age_days": 72,
   "history_backfill": "skipped"
  },
  "ptax_usd": {
   "live_fetch": "success",
-  "run_at": "2026-11-11T01:20:43Z",
-  "last_data": "2026-11-10",
+  "run_at": "2026-11-12T02:21:59Z",
+  "last_data": "2026-11-11",
   "age_days": 1,
   "history_backfill": "skipped"
  },
  "ptax_eur": {
   "live_fetch": "success",
-  "run_at": "2026-11-11T01:20:43Z",
-  "last_data": "2026-11-10",
+  "run_at": "2026-11-12T02:21:59Z",
+  "last_data": "2026-11-11",
   "age_days": 1,
   "history_backfill": "skipped"
  },
  "desemprego": {
   "live_fetch": "success",
-  "run_at": "2026-11-11T01:20:43Z",
+  "run_at": "2026-11-12T02:21:59Z",
   "last_data": "2026-09-01",
-  "age_days": 71,
+  "age_days": 72,
   "history_backfill": "skipped"
  },
  "divida_bruta": {
   "live_fetch": "success",
-  "run_at": "2026-11-11T01:20:43Z",
+  "run_at": "2026-11-12T02:21:59Z",
   "last_data": "2026-09-01",
-  "age_days": 71,
+  "age_days": 72,
   "history_backfill": "skipped"
  },
  "focus_ipca_2026": {
   "live_fetch": "success",
-  "run_at": "2026-11-11T01:20:43Z",
+  "run_at": "2026-11-12T02:21:59Z",
   "last_data": "2026-11-06",
-  "age_days": 5,
+  "age_days": 6,
   "history_backfill": "skipped"
  },
  "balanca_comercial": {
   "live_fetch": "success",
-  "run_at": "2026-11-11T01:20:43Z",
+  "run_at": "2026-11-12T02:21:59Z",
   "last_data": "2026-09-01",
-  "age_days": 71,
+  "age_days": 72,
   "history_backfill": "skipped"
  },
  "estados_desemprego": {
   "live_fetch": "success",
-  "run_at": "2026-11-11T01:20:43Z",
+  "run_at": "2026-11-12T02:21:59Z",
   "states": 27
  },
  "salarios_uf": {
   "live_fetch": "success",
-  "run_at": "2026-11-11T01:20:43Z",
+  "run_at": "2026-11-12T02:21:59Z",
   "states": 27
  },
  "indice_pressao": {
   "derived": "success",
-  "run_at": "2026-11-11T01:20:43Z",
+  "run_at": "2026-11-12T02:21:59Z",
   "months": 24
  },
  "quality": {
   "derived": "success",
-  "run_at": "2026-11-11T01:20:43Z",
+  "run_at": "2026-11-12T02:21:59Z",
   "datasets": 11
  }
 }
