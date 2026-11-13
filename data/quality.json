@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-11-12T02:21:59Z",
+ "generated_at": "2026-11-13T01:59:40Z",
  "datasets": {
   "selic_meta": {
    "name": "Selic meta (SGS 432)",
    "unit": "% a.a.",
    "frequency": "a cada decisão",
-   "observations": 742,
+   "observations": 743,
    "first_observation": "2024-10-31",
-   "last_observation": "2026-11-12",
+   "last_observation": "2026-11-13",
    "missing_months": null,
    "future_rows_removed": 0,
    "duplicates_removed": 0,
@@ -21,9 +21,9 @@
    "name": "IPCA 12 meses (SGS 13522, origem IBGE)",
    "unit": "%",
    "frequency": "mensal",
-   "observations": 24,
+   "observations": 25,
    "first_observation": "2024-10-01",
-   "last_observation": "2026-09-01",
+   "last_observation": "2026-10-01",
    "missing_months": 0,
    "future_rows_removed": 0,
    "duplicates_removed": 0,
@@ -37,9 +37,9 @@
    "name": "PTAX dólar, venda",
    "unit": "R$",
    "frequency": "diária",
-   "observations": 508,
+   "observations": 509,
    "first_observation": "2024-10-31",
-   "last_observation": "2026-11-11",
+   "last_observation": "2026-11-12",
    "missing_months": null,
    "future_rows_removed": 0,
    "duplicates_removed": 0,
@@ -53,9 +53,9 @@
    "name": "PTAX euro, venda",
    "unit": "R$",
    "frequency": "diária",
-   "observations": 508,
+   "observations": 509,
    "first_observation": "2024-10-31",
-   "last_observation": "2026-11-11",
+   "last_observation": "2026-11-12",
    "missing_months": null,
    "future_rows_removed": 0,
    "duplicates_removed": 0,
@@ -132,17 +132,17 @@
   "estados_desemprego": {
    "name": "Desemprego por UF",
    "collection": "success",
-   "run_at": "2026-11-12T02:21:59Z"
+   "run_at": "2026-11-13T01:59:40Z"
   },
   "salarios_uf": {
    "name": "Rendimento por UF",
    "collection": "success",
-   "run_at": "2026-11-12T02:21:59Z"
+   "run_at": "2026-11-13T01:59:40Z"
   },
   "indice_pressao": {
    "name": "Índice de pressão macroeconômica",
    "collection": "success",
-   "run_at": "2026-11-12T02:21:59Z"
+   "run_at": "2026-11-13T01:59:40Z"
   }
  }
 }
