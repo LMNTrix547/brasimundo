@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-11-14T01:32:01Z",
+ "generated_at": "2026-11-17T04:03:17Z",
  "datasets": {
   "selic_meta": {
    "name": "Selic meta (SGS 432)",
    "unit": "% a.a.",
    "frequency": "a cada decisão",
-   "observations": 744,
+   "observations": 745,
    "first_observation": "2024-10-31",
-   "last_observation": "2026-11-14",
+   "last_observation": "2026-11-17",
    "missing_months": null,
    "future_rows_removed": 0,
    "duplicates_removed": 0,
@@ -37,9 +37,9 @@
    "name": "PTAX dólar, venda",
    "unit": "R$",
    "frequency": "diária",
-   "observations": 510,
+   "observations": 511,
    "first_observation": "2024-10-31",
-   "last_observation": "2026-11-13",
+   "last_observation": "2026-11-16",
    "missing_months": null,
    "future_rows_removed": 0,
    "duplicates_removed": 0,
@@ -53,9 +53,9 @@
    "name": "PTAX euro, venda",
    "unit": "R$",
    "frequency": "diária",
-   "observations": 510,
+   "observations": 511,
    "first_observation": "2024-10-31",
-   "last_observation": "2026-11-13",
+   "last_observation": "2026-11-16",
    "missing_months": null,
    "future_rows_removed": 0,
    "duplicates_removed": 0,
@@ -101,9 +101,9 @@
    "name": "Focus: IPCA 2026, mediana",
    "unit": "%",
    "frequency": "semanal",
-   "observations": 254,
+   "observations": 255,
    "first_observation": "2025-01-02",
-   "last_observation": "2026-11-06",
+   "last_observation": "2026-11-13",
    "missing_months": null,
    "future_rows_removed": 0,
    "duplicates_removed": 0,
@@ -125,24 +125,24 @@
    "duplicates_removed": 0,
    "observation_after_retrieval": false,
    "collection": "success",
-   "observation_status": "ok",
+   "observation_status": "stale",
    "source": "Banco Central do Brasil",
    "license": "Dados abertos (Banco Central do Brasil)"
   },
   "estados_desemprego": {
    "name": "Desemprego por UF",
    "collection": "success",
-   "run_at": "2026-11-14T01:32:01Z"
+   "run_at": "2026-11-17T04:03:17Z"
   },
   "salarios_uf": {
    "name": "Rendimento por UF",
    "collection": "success",
-   "run_at": "2026-11-14T01:32:01Z"
+   "run_at": "2026-11-17T04:03:17Z"
   },
   "indice_pressao": {
    "name": "Índice de pressão macroeconômica",
    "collection": "success",
-   "run_at": "2026-11-14T01:32:01Z"
+   "run_at": "2026-11-17T04:03:17Z"
   }
  }
 }
