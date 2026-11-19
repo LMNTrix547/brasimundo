@@ -1,5 +1,5 @@
 {
- "retrieved_at": "2026-11-18T02:59:27Z",
+ "retrieved_at": "2026-11-19T02:41:59Z",
  "source": "IBGE, PNAD Contínua (desocupação por UF)",
  "license": "Dados abertos (IBGE)",
  "verification_level": "N5",
@@ -7,138 +7,138 @@
  "states": {
   "RO": {
    "name": "Rondônia",
-   "value": 2.6,
-   "ref_date": "2026-02-01"
+   "value": 3.3,
+   "ref_date": "2026-03-01"
   },
   "AC": {
    "name": "Acre",
-   "value": 6.6,
-   "ref_date": "2026-02-01"
+   "value": 6.3,
+   "ref_date": "2026-03-01"
   },
   "AM": {
    "name": "Amazonas",
-   "value": 7.5,
-   "ref_date": "2026-02-01"
+   "value": 6.4,
+   "ref_date": "2026-03-01"
   },
   "RR": {
    "name": "Roraima",
    "value": 5.0,
-   "ref_date": "2026-02-01"
+   "ref_date": "2026-03-01"
   },
   "PA": {
    "name": "Pará",
-   "value": 6.2,
-   "ref_date": "2026-02-01"
+   "value": 5.7,
+   "ref_date": "2026-03-01"
   },
   "AP": {
    "name": "Amapá",
-   "value": 9.8,
-   "ref_date": "2026-02-01"
+   "value": 7.9,
+   "ref_date": "2026-03-01"
   },
   "TO": {
    "name": "Tocantins",
    "value": 4.1,
-   "ref_date": "2026-02-01"
+   "ref_date": "2026-03-01"
   },
   "MA": {
    "name": "Maranhão",
    "value": 6.0,
-   "ref_date": "2026-02-01"
+   "ref_date": "2026-03-01"
   },
   "PI": {
    "name": "Piauí",
-   "value": 8.3,
-   "ref_date": "2026-02-01"
+   "value": 6.8,
+   "ref_date": "2026-03-01"
   },
   "CE": {
    "name": "Ceará",
-   "value": 6.6,
-   "ref_date": "2026-02-01"
+   "value": 5.7,
+   "ref_date": "2026-03-01"
   },
   "RN": {
    "name": "Rio Grande do Norte",
-   "value": 5.6,
-   "ref_date": "2026-02-01"
+   "value": 4.5,
+   "ref_date": "2026-03-01"
   },
   "PB": {
    "name": "Paraíba",
-   "value": 5.4,
-   "ref_date": "2026-02-01"
+   "value": 4.5,
+   "ref_date": "2026-03-01"
   },
   "PE": {
    "name": "Pernambuco",
-   "value": 8.3,
-   "ref_date": "2026-02-01"
+   "value": 8.6,
+   "ref_date": "2026-03-01"
   },
   "AL": {
    "name": "Alagoas",
-   "value": 7.9,
-   "ref_date": "2026-02-01"
+   "value": 6.8,
+   "ref_date": "2026-03-01"
   },
   "SE": {
    "name": "Sergipe",
-   "value": 7.9,
-   "ref_date": "2026-02-01"
+   "value": 7.4,
+   "ref_date": "2026-03-01"
   },
   "BA": {
    "name": "Bahia",
-   "value": 9.1,
-   "ref_date": "2026-02-01"
+   "value": 7.1,
+   "ref_date": "2026-03-01"
   },
   "MG": {
    "name": "Minas Gerais",
-   "value": 3.8,
-   "ref_date": "2026-02-01"
+   "value": 4.0,
+   "ref_date": "2026-03-01"
   },
   "ES": {
    "name": "Espírito Santo",
-   "value": 2.3,
-   "ref_date": "2026-02-01"
+   "value": 3.0,
+   "ref_date": "2026-03-01"
   },
   "RJ": {
    "name": "Rio de Janeiro",
-   "value": 7.1,
-   "ref_date": "2026-02-01"
+   "value": 6.9,
+   "ref_date": "2026-03-01"
   },
   "SP": {
    "name": "São Paulo",
    "value": 5.4,
-   "ref_date": "2026-02-01"
+   "ref_date": "2026-03-01"
   },
   "PR": {
    "name": "Paraná",
-   "value": 3.1,
-   "ref_date": "2026-02-01"
+   "value": 3.0,
+   "ref_date": "2026-03-01"
   },
   "SC": {
    "name": "Santa Catarina",
-   "value": 2.1,
-   "ref_date": "2026-02-01"
+   "value": 2.2,
+   "ref_date": "2026-03-01"
   },
   "RS": {
    "name": "Rio Grande do Sul",
-   "value": 4.2,
-   "ref_date": "2026-02-01"
+   "value": 4.3,
+   "ref_date": "2026-03-01"
   },
   "MS": {
    "name": "Mato Grosso do Sul",
-   "value": 2.7,
-   "ref_date": "2026-02-01"
+   "value": 2.3,
+   "ref_date": "2026-03-01"
   },
   "MT": {
    "name": "Mato Grosso",
-   "value": 2.2,
-   "ref_date": "2026-02-01"
+   "value": 2.6,
+   "ref_date": "2026-03-01"
   },
   "GO": {
    "name": "Goiás",
-   "value": 4.0,
-   "ref_date": "2026-02-01"
+   "value": 4.5,
+   "ref_date": "2026-03-01"
   },
   "DF": {
    "name": "Distrito Federal",
-   "value": 6.5,
-   "ref_date": "2026-02-01"
+   "value": 5.4,
+   "ref_date": "2026-03-01"
   }
  }
 }
