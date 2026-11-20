@@ -1,0 +1,424 @@
+{
+ "name": "Índice de custo do crédito ao consumidor (versão inicial)",
+ "base_month": "2018-09",
+ "base_value": 100,
+ "latest_month": "2026-09",
+ "components": [
+  {
+   "key": "cheque_especial",
+   "label": "Cheque especial",
+   "weight": 0.3333,
+   "base": 255.45,
+   "latest": 139.02
+  },
+  {
+   "key": "rotativo",
+   "label": "Rotativo",
+   "weight": 0.3333,
+   "base": 284.22,
+   "latest": 451.71
+  },
+  {
+   "key": "cartao_parcelado",
+   "label": "Cartão parcelado",
+   "weight": 0.3333,
+   "base": 164.5,
+   "latest": 193.02
+  }
+ ],
+ "series": [
+  {
+   "month": "2018-09",
+   "value": 100.0
+  },
+  {
+   "month": "2018-10",
+   "value": 100.37
+  },
+  {
+   "month": "2018-11",
+   "value": 100.65
+  },
+  {
+   "month": "2018-12",
+   "value": 100.71
+  },
+  {
+   "month": "2019-01",
+   "value": 101.76
+  },
+  {
+   "month": "2019-02",
+   "value": 104.04
+  },
+  {
+   "month": "2019-03",
+   "value": 106.93
+  },
+  {
+   "month": "2019-04",
+   "value": 105.49
+  },
+  {
+   "month": "2019-05",
+   "value": 106.02
+  },
+  {
+   "month": "2019-06",
+   "value": 106.39
+  },
+  {
+   "month": "2019-07",
+   "value": 105.92
+  },
+  {
+   "month": "2019-08",
+   "value": 105.17
+  },
+  {
+   "month": "2019-09",
+   "value": 104.18
+  },
+  {
+   "month": "2019-10",
+   "value": 106.15
+  },
+  {
+   "month": "2019-11",
+   "value": 107.52
+  },
+  {
+   "month": "2019-12",
+   "value": 105.1
+  },
+  {
+   "month": "2020-01",
+   "value": 92.57
+  },
+  {
+   "month": "2020-02",
+   "value": 92.6
+  },
+  {
+   "month": "2020-03",
+   "value": 93.71
+  },
+  {
+   "month": "2020-04",
+   "value": 82.51
+  },
+  {
+   "month": "2020-05",
+   "value": 78.69
+  },
+  {
+   "month": "2020-06",
+   "value": 72.44
+  },
+  {
+   "month": "2020-07",
+   "value": 77.01
+  },
+  {
+   "month": "2020-08",
+   "value": 78.4
+  },
+  {
+   "month": "2020-09",
+   "value": 79.66
+  },
+  {
+   "month": "2020-10",
+   "value": 81.7
+  },
+  {
+   "month": "2020-11",
+   "value": 82.18
+  },
+  {
+   "month": "2020-12",
+   "value": 83.74
+  },
+  {
+   "month": "2021-01",
+   "value": 87.09
+  },
+  {
+   "month": "2021-02",
+   "value": 88.59
+  },
+  {
+   "month": "2021-03",
+   "value": 89.3
+  },
+  {
+   "month": "2021-04",
+   "value": 89.25
+  },
+  {
+   "month": "2021-05",
+   "value": 88.07
+  },
+  {
+   "month": "2021-06",
+   "value": 88.32
+  },
+  {
+   "month": "2021-07",
+   "value": 88.19
+  },
+  {
+   "month": "2021-08",
+   "value": 88.82
+  },
+  {
+   "month": "2021-09",
+   "value": 90.81
+  },
+  {
+   "month": "2021-10",
+   "value": 91.84
+  },
+  {
+   "month": "2021-11",
+   "value": 91.16
+  },
+  {
+   "month": "2021-12",
+   "value": 91.56
+  },
+  {
+   "month": "2022-01",
+   "value": 91.95
+  },
+  {
+   "month": "2022-02",
+   "value": 94.27
+  },
+  {
+   "month": "2022-03",
+   "value": 93.75
+  },
+  {
+   "month": "2022-04",
+   "value": 95.56
+  },
+  {
+   "month": "2022-05",
+   "value": 94.94
+  },
+  {
+   "month": "2022-06",
+   "value": 95.38
+  },
+  {
+   "month": "2022-07",
+   "value": 99.76
+  },
+  {
+   "month": "2022-08",
+   "value": 101.49
+  },
+  {
+   "month": "2022-09",
+   "value": 100.96
+  },
+  {
+   "month": "2022-10",
+   "value": 102.91
+  },
+  {
+   "month": "2022-11",
+   "value": 100.54
+  },
+  {
+   "month": "2022-12",
+   "value": 102.32
+  },
+  {
+   "month": "2023-01",
+   "value": 102.97
+  },
+  {
+   "month": "2023-02",
+   "value": 105.75
+  },
+  {
+   "month": "2023-03",
+   "value": 106.97
+  },
+  {
+   "month": "2023-04",
+   "value": 110.52
+  },
+  {
+   "month": "2023-05",
+   "value": 109.65
+  },
+  {
+   "month": "2023-06",
+   "value": 108.4
+  },
+  {
+   "month": "2023-07",
+   "value": 109.15
+  },
+  {
+   "month": "2023-08",
+   "value": 108.89
+  },
+  {
+   "month": "2023-09",
+   "value": 108.48
+  },
+  {
+   "month": "2023-10",
+   "value": 109.05
+  },
+  {
+   "month": "2023-11",
+   "value": 107.94
+  },
+  {
+   "month": "2023-12",
+   "value": 108.47
+  },
+  {
+   "month": "2024-01",
+   "value": 103.76
+  },
+  {
+   "month": "2024-02",
+   "value": 103.83
+  },
+  {
+   "month": "2024-03",
+   "value": 104.76
+  },
+  {
+   "month": "2024-04",
+   "value": 103.58
+  },
+  {
+   "month": "2024-05",
+   "value": 104.41
+  },
+  {
+   "month": "2024-06",
+   "value": 104.38
+  },
+  {
+   "month": "2024-07",
+   "value": 103.95
+  },
+  {
+   "month": "2024-08",
+   "value": 104.36
+  },
+  {
+   "month": "2024-09",
+   "value": 106.85
+  },
+  {
+   "month": "2024-10",
+   "value": 105.62
+  },
+  {
+   "month": "2024-11",
+   "value": 107.44
+  },
+  {
+   "month": "2024-12",
+   "value": 105.24
+  },
+  {
+   "month": "2025-01",
+   "value": 106.25
+  },
+  {
+   "month": "2025-02",
+   "value": 109.74
+  },
+  {
+   "month": "2025-03",
+   "value": 108.92
+  },
+  {
+   "month": "2025-04",
+   "value": 108.91
+  },
+  {
+   "month": "2025-05",
+   "value": 109.33
+  },
+  {
+   "month": "2025-06",
+   "value": 109.29
+  },
+  {
+   "month": "2025-07",
+   "value": 109.2
+  },
+  {
+   "month": "2025-08",
+   "value": 108.75
+  },
+  {
+   "month": "2025-09",
+   "value": 107.98
+  },
+  {
+   "month": "2025-10",
+   "value": 108.56
+  },
+  {
+   "month": "2025-11",
+   "value": 109.56
+  },
+  {
+   "month": "2025-12",
+   "value": 109.01
+  },
+  {
+   "month": "2026-01",
+   "value": 107.78
+  },
+  {
+   "month": "2026-02",
+   "value": 110.78
+  },
+  {
+   "month": "2026-03",
+   "value": 107.83
+  },
+  {
+   "month": "2026-04",
+   "value": 107.16
+  },
+  {
+   "month": "2026-05",
+   "value": 108.05
+  },
+  {
+   "month": "2026-06",
+   "value": 109.52
+  },
+  {
+   "month": "2026-07",
+   "value": 107.48
+  },
+  {
+   "month": "2026-08",
+   "value": 108.89
+  },
+  {
+   "month": "2026-09",
+   "value": 110.23
+  }
+ ],
+ "months": 97,
+ "retrieved_at": "2026-11-20T13:29:02Z",
+ "source": "Derivado de séries do Banco Central do Brasil (SGS)",
+ "license": "a confirmar na página de termos do Banco Central",
+ "verification_level": "N5 (derivado)"
+}

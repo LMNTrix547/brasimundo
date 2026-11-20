@@ -1,0 +1,51 @@
+{
+ "retrieved_at": "2026-11-20T13:29:02Z",
+ "source": "Banco Central do Brasil, SGS (taxas médias de juros das novas operações)",
+ "license": "a confirmar na página de termos do Banco Central",
+ "verification_level": "N5",
+ "series": {
+  "cheque_especial": {
+   "label": "Cheque especial (pessoas físicas)",
+   "code": 20741,
+   "value": 139.02,
+   "ref_date": "2026-09-01",
+   "unit": "% a.a."
+  },
+  "rotativo": {
+   "label": "Cartão de crédito rotativo (pessoas físicas)",
+   "code": 22022,
+   "value": 451.71,
+   "ref_date": "2026-09-01",
+   "unit": "% a.a."
+  },
+  "cartao_parcelado": {
+   "label": "Cartão de crédito parcelado (pessoas físicas)",
+   "code": 22023,
+   "value": 193.02,
+   "ref_date": "2026-09-01",
+   "unit": "% a.a."
+  },
+  "credito_pf_total": {
+   "label": "Crédito a pessoas físicas, total",
+   "code": 20716,
+   "value": 38.53,
+   "ref_date": "2026-09-01",
+   "unit": "% a.a."
+  },
+  "credito_pf_nao_rotativo": {
+   "label": "Crédito a pessoas físicas, não rotativo",
+   "code": 27625,
+   "value": 30.79,
+   "ref_date": "2026-09-01",
+   "unit": "% a.a."
+  },
+  "credito_direcionado_pf": {
+   "label": "Crédito direcionado a pessoas físicas",
+   "code": 20768,
+   "value": 11.3,
+   "ref_date": "2026-09-01",
+   "unit": "% a.a."
+  }
+ },
+ "errors": []
+}

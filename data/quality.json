@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-20T02:27:40Z",
+ "generated_at": "2026-11-20T13:29:02Z",
  "datasets": {
   "selic_meta": {
    "name": "Selic meta (SGS 432)",
@@ -132,17 +132,17 @@
   "estados_desemprego": {
    "name": "Desemprego por UF",
    "collection": "success",
-   "run_at": "2026-11-20T02:27:40Z"
+   "run_at": "2026-11-20T13:29:02Z"
   },
   "salarios_uf": {
    "name": "Rendimento por UF",
    "collection": "success",
-   "run_at": "2026-11-20T02:27:40Z"
+   "run_at": "2026-11-20T13:29:02Z"
   },
   "indice_pressao": {
    "name": "Índice de pressão macroeconômica",
    "collection": "success",
-   "run_at": "2026-11-20T02:27:40Z"
+   "run_at": "2026-11-20T13:29:02Z"
   }
  }
 }

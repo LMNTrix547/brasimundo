@@ -1,0 +1,81 @@
+{
+ "retrieved_at": "2026-11-20T13:29:02Z",
+ "source": "Banco Central do Brasil, Expectativas de Mercado (Focus)",
+ "license": "a confirmar na página de termos do Banco Central",
+ "verification_level": "N5",
+ "rows": [
+  {
+   "indicador": "IPCA",
+   "referencia": "2026",
+   "data_pesquisa": "2026-11-13",
+   "mediana": 5.1082,
+   "media": 5.1123,
+   "respondentes": 146
+  },
+  {
+   "indicador": "IPCA",
+   "referencia": "2027",
+   "data_pesquisa": "2026-11-13",
+   "mediana": 5.0,
+   "media": 4.9551,
+   "respondentes": 146
+  },
+  {
+   "indicador": "IPCA",
+   "referencia": "2028",
+   "data_pesquisa": "2026-11-13",
+   "mediana": 4.0,
+   "media": 4.0509,
+   "respondentes": 133
+  },
+  {
+   "indicador": "PIB Total",
+   "referencia": "2026",
+   "data_pesquisa": "2026-11-13",
+   "mediana": 1.7215,
+   "media": 1.7319,
+   "respondentes": 119
+  },
+  {
+   "indicador": "PIB Total",
+   "referencia": "2027",
+   "data_pesquisa": "2026-11-13",
+   "mediana": 1.0224,
+   "media": 1.0502,
+   "respondentes": 118
+  },
+  {
+   "indicador": "Selic",
+   "referencia": "2026",
+   "data_pesquisa": "2026-11-13",
+   "mediana": 13.75,
+   "media": 13.684,
+   "respondentes": 144
+  },
+  {
+   "indicador": "Selic",
+   "referencia": "2027",
+   "data_pesquisa": "2026-11-13",
+   "mediana": 12.75,
+   "media": 12.776,
+   "respondentes": 144
+  },
+  {
+   "indicador": "Câmbio",
+   "referencia": "2026",
+   "data_pesquisa": "2026-11-13",
+   "mediana": 5.4,
+   "media": 5.3926,
+   "respondentes": 121
+  },
+  {
+   "indicador": "Câmbio",
+   "referencia": "2027",
+   "data_pesquisa": "2026-11-13",
+   "mediana": 5.45,
+   "media": 5.4251,
+   "respondentes": 120
+  }
+ ],
+ "errors": []
+}
