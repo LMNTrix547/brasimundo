@@ -352,6 +352,51 @@ def build_pressure_index():
         for row in series: w.writerow([row["month"], row["value"]])
     return len(series)
 
+# ---- Focus table (all indicators and years) -----------------------------------------------------
+# Banco Central, Expectativas de Mercado. For each indicator and reference year we keep the median of the
+# newest survey date, using the base that covers all respondents. Failures are recorded, never invented.
+FOCUS_TABLE = [
+    ("IPCA", ["2026", "2027", "2028"], (-5, 40)),
+    ("PIB Total", ["2026", "2027"], (-10, 15)),
+    ("Selic", ["2026", "2027"], (0, 40)),
+    ("Câmbio", ["2026", "2027"], (1, 20)),
+]
+FOCUS_BASE = "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais"
+
+def focus_url(indicador, ref):
+    from urllib.parse import quote
+    flt = f"Indicador eq '{indicador}' and DataReferencia eq '{ref}'"
+    return f"{FOCUS_BASE}?$filter={quote(flt)}&$orderby=Data%20desc&$top=40&$format=json"
+
+def focus_table():
+    rows, errors = [], []
+    for indicador, refs, (lo, hi) in FOCUS_TABLE:
+        for ref in refs:
+            try:
+                data = get(focus_url(indicador, ref))["value"]
+            except Exception as e:
+                errors.append(f"{indicador} {ref}: {str(e)[:80]}"); continue
+            if not data:
+                errors.append(f"{indicador} {ref}: sem linhas"); continue
+            newest = data[0]["Data"][:10]  # the feed is ordered newest first
+            same = [r for r in data if r["Data"][:10] == newest]
+            pick = [r for r in same if str(r.get("baseCalculo", "0")) == "0"] or same
+            r = pick[0]
+            try:
+                med = float(r["Mediana"])
+            except (TypeError, ValueError, KeyError):
+                errors.append(f"{indicador} {ref}: sem mediana"); continue
+            if not (lo <= med <= hi):
+                errors.append(f"{indicador} {ref}: valor implausível {med}"); continue
+            rows.append({
+                "indicador": indicador, "referencia": ref, "data_pesquisa": newest,
+                "mediana": med,
+                "media": float(r["Media"]) if r.get("Media") not in (None, "") else None,
+                "respondentes": int(r["numeroRespondentes"]) if r.get("numeroRespondentes") not in (None, "") else None,
+            })
+    if not rows: raise RuntimeError("; ".join(errors) or "nenhuma linha")
+    return rows, errors
+
 def load(path, default):
     try:
         with open(path, encoding="utf-8") as f: return json.load(f)
@@ -468,6 +513,69 @@ def quality_report(stamp):
     json.dump(report, open(f"{OUT}/quality.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     return len(report["datasets"])
 
+# ---- Consumer credit: what borrowing costs (Banco Central, SGS) --------------------------------
+# Codes checked on the Banco Central's open-data metadata pages. Rates are the average rate on NEW
+# operations, weighted by the value lent, in % per year. They describe new contracts, not the rate every
+# borrower pays. Personal loans and payroll loans are not included until their codes are verified.
+CREDIT_SERIES = [
+    ("cheque_especial", "Cheque especial (pessoas físicas)", 20741),
+    ("rotativo", "Cartão de crédito rotativo (pessoas físicas)", 22022),
+    ("cartao_parcelado", "Cartão de crédito parcelado (pessoas físicas)", 22023),
+    ("credito_pf_total", "Crédito a pessoas físicas, total", 20716),
+    ("credito_pf_nao_rotativo", "Crédito a pessoas físicas, não rotativo", 27625),
+    ("credito_direcionado_pf", "Crédito direcionado a pessoas físicas", 20768),
+]
+for _cid, _, _code in CREDIT_SERIES:
+    PLAUSIBLE[_cid] = (0, 2000)                       # % a.a.; the revolving card can exceed 300%
+    HISTORY[_cid] = (lambda c=_code: sgs_history(c, days=3000))
+
+# Consumer credit index, first version: the average of three non-overlapping rates that most people meet
+# (overdraft, revolving card balance, installment card purchases). Same method as the macro index:
+# each rate divided by its value in the first common month, averaged with equal weights, times 100.
+# Personal loans and payroll loans will join the index once their codes are verified.
+INDEX_CREDIT = [("cheque_especial", "Cheque especial"), ("rotativo", "Rotativo"), ("cartao_parcelado", "Cartão parcelado")]
+
+def credit_rates(stamp):
+    out, errors = {}, []
+    for cid, label, code in CREDIT_SERIES:
+        try:
+            value, ref = sgs(code)
+            if not in_range(cid, value):
+                raise RuntimeError(f"implausible value {value}; check the code and unit")
+            backfill(cid, stamp)
+            append_history(cid, ref, value, stamp)
+            out[cid] = {"label": label, "code": code, "value": value, "ref_date": ref, "unit": "% a.a."}
+        except Exception as e:
+            errors.append(f"{cid} (SGS {code}): {str(e)[:120]}")
+    if not out: raise RuntimeError("; ".join(errors) or "no credit series")
+    json.dump({"retrieved_at": stamp, "source": "Banco Central do Brasil, SGS (taxas médias de juros das novas operações)",
+               "license": "a confirmar na página de termos do Banco Central", "verification_level": "N5",
+               "series": out, "errors": errors},
+              open(f"{OUT}/credito.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    return out, errors
+
+def build_credit_index():
+    today = NOW.date().isoformat()
+    monthly = {cid: _monthly_last(f"{OUT}/history/{cid}.csv", today) for cid, _ in INDEX_CREDIT}
+    common = sorted(set.intersection(*(set(m) for m in monthly.values())))
+    if len(common) < 6: raise RuntimeError(f"only {len(common)} months with all three rates")
+    base = common[0]
+    n = len(INDEX_CREDIT)
+    series = [{"month": m, "value": round(100 * sum(monthly[k][m] / monthly[k][base] for k, _ in INDEX_CREDIT) / n, 2)}
+              for m in common]
+    components = [{"key": k, "label": lab, "weight": round(1 / n, 4), "base": monthly[k][base],
+                   "latest": monthly[k][common[-1]]} for k, lab in INDEX_CREDIT]
+    stamp = NOW.strftime("%Y-%m-%dT%H:%M:%SZ")
+    doc = {"name": "Índice de custo do crédito ao consumidor (versão inicial)", "base_month": base, "base_value": 100,
+           "latest_month": common[-1], "components": components, "series": series, "months": len(series),
+           "retrieved_at": stamp, "source": "Derivado de séries do Banco Central do Brasil (SGS)",
+           "license": "a confirmar na página de termos do Banco Central", "verification_level": "N5 (derivado)"}
+    json.dump(doc, open(f"{OUT}/indice_credito.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    with open(f"{OUT}/indice_credito.csv", "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f); w.writerow(["month", "value"])
+        for row in series: w.writerow([row["month"], row["value"]])
+    return len(series)
+
 def main():
     os.makedirs(f"{OUT}/history", exist_ok=True)
     latest = load(f"{OUT}/latest.json", {})
@@ -529,6 +637,28 @@ def main():
         status["indice_pressao"] = {"derived": "failed", "run_at": stamp, "error": str(e)[:300]}
     print("indice_pressao", status["indice_pressao"]["derived"])
     json.dump(status, open(f"{OUT}/status.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    try:
+        rows, errors = focus_table()
+        json.dump({"retrieved_at": stamp, "source": "Banco Central do Brasil, Expectativas de Mercado (Focus)",
+                   "license": "a confirmar na página de termos do Banco Central", "verification_level": "N5",
+                   "rows": rows, "errors": errors},
+                  open(f"{OUT}/focus.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        status["focus_tabela"] = {"live_fetch": "success", "run_at": stamp, "rows": len(rows),
+                                  "errors": [e[:120] for e in errors][:6]}
+    except Exception as e:
+        status["focus_tabela"] = {"live_fetch": "failed", "run_at": stamp, "error": str(e)[:600]}
+    print("focus_tabela", status["focus_tabela"]["live_fetch"])
+    try:
+        cred, cerr = credit_rates(stamp)
+        status["credito"] = {"live_fetch": "success", "run_at": stamp, "series": len(cred), "errors": [e[:120] for e in cerr][:6]}
+    except Exception as e:
+        status["credito"] = {"live_fetch": "failed", "run_at": stamp, "error": str(e)[:600]}
+    print("credito", status["credito"]["live_fetch"])
+    try:
+        status["indice_credito"] = {"derived": "success", "run_at": stamp, "months": build_credit_index()}
+    except Exception as e:
+        status["indice_credito"] = {"derived": "failed", "run_at": stamp, "error": str(e)[:300]}
+    print("indice_credito", status["indice_credito"]["derived"])
     try:
         status["quality"] = {"derived": "success", "run_at": stamp, "datasets": quality_report(stamp)}
     except Exception as e:
