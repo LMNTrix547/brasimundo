@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-11-19T02:41:59Z",
+ "generated_at": "2026-11-20T02:27:40Z",
  "datasets": {
   "selic_meta": {
    "name": "Selic meta (SGS 432)",
    "unit": "% a.a.",
    "frequency": "a cada decisão",
-   "observations": 747,
+   "observations": 748,
    "first_observation": "2024-10-31",
-   "last_observation": "2026-11-19",
+   "last_observation": "2026-11-20",
    "missing_months": null,
    "future_rows_removed": 0,
    "duplicates_removed": 0,
@@ -37,9 +37,9 @@
    "name": "PTAX dólar, venda",
    "unit": "R$",
    "frequency": "diária",
-   "observations": 513,
+   "observations": 514,
    "first_observation": "2024-10-31",
-   "last_observation": "2026-11-18",
+   "last_observation": "2026-11-19",
    "missing_months": null,
    "future_rows_removed": 0,
    "duplicates_removed": 0,
@@ -53,9 +53,9 @@
    "name": "PTAX euro, venda",
    "unit": "R$",
    "frequency": "diária",
-   "observations": 513,
+   "observations": 514,
    "first_observation": "2024-10-31",
-   "last_observation": "2026-11-18",
+   "last_observation": "2026-11-19",
    "missing_months": null,
    "future_rows_removed": 0,
    "duplicates_removed": 0,
@@ -132,17 +132,17 @@
   "estados_desemprego": {
    "name": "Desemprego por UF",
    "collection": "success",
-   "run_at": "2026-11-19T02:41:59Z"
+   "run_at": "2026-11-20T02:27:40Z"
   },
   "salarios_uf": {
    "name": "Rendimento por UF",
    "collection": "success",
-   "run_at": "2026-11-19T02:41:59Z"
+   "run_at": "2026-11-20T02:27:40Z"
   },
   "indice_pressao": {
    "name": "Índice de pressão macroeconômica",
    "collection": "success",
-   "run_at": "2026-11-19T02:41:59Z"
+   "run_at": "2026-11-20T02:27:40Z"
   }
  }
 }
