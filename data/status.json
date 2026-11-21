@@ -5,95 +5,95 @@
  },
  "selic_meta": {
   "live_fetch": "success",
-  "run_at": "2026-11-20T13:29:02Z",
-  "last_data": "2026-11-20",
+  "run_at": "2026-11-21T02:38:34Z",
+  "last_data": "2026-11-21",
   "age_days": 0,
   "history_backfill": "skipped"
  },
  "ipca_12m": {
   "live_fetch": "success",
-  "run_at": "2026-11-20T13:29:02Z",
+  "run_at": "2026-11-21T02:38:34Z",
   "last_data": "2026-10-01",
-  "age_days": 50,
+  "age_days": 51,
   "history_backfill": "skipped"
  },
  "ptax_usd": {
   "live_fetch": "success",
-  "run_at": "2026-11-20T13:29:02Z",
+  "run_at": "2026-11-21T02:38:34Z",
   "last_data": "2026-11-19",
-  "age_days": 1,
+  "age_days": 2,
   "history_backfill": "skipped"
  },
  "ptax_eur": {
   "live_fetch": "success",
-  "run_at": "2026-11-20T13:29:02Z",
+  "run_at": "2026-11-21T02:38:34Z",
   "last_data": "2026-11-19",
-  "age_days": 1,
+  "age_days": 2,
   "history_backfill": "skipped"
  },
  "desemprego": {
   "live_fetch": "success",
-  "run_at": "2026-11-20T13:29:02Z",
+  "run_at": "2026-11-21T02:38:34Z",
   "last_data": "2026-09-01",
-  "age_days": 80,
+  "age_days": 81,
   "history_backfill": "skipped"
  },
  "divida_bruta": {
   "live_fetch": "success",
-  "run_at": "2026-11-20T13:29:02Z",
+  "run_at": "2026-11-21T02:38:34Z",
   "last_data": "2026-09-01",
-  "age_days": 80,
+  "age_days": 81,
   "history_backfill": "skipped"
  },
  "focus_ipca_2026": {
   "live_fetch": "success",
-  "run_at": "2026-11-20T13:29:02Z",
+  "run_at": "2026-11-21T02:38:34Z",
   "last_data": "2026-11-13",
-  "age_days": 7,
+  "age_days": 8,
   "history_backfill": "skipped"
  },
  "balanca_comercial": {
   "live_fetch": "success",
-  "run_at": "2026-11-20T13:29:02Z",
+  "run_at": "2026-11-21T02:38:34Z",
   "last_data": "2026-09-01",
-  "age_days": 80,
+  "age_days": 81,
   "history_backfill": "skipped"
  },
  "estados_desemprego": {
   "live_fetch": "success",
-  "run_at": "2026-11-20T13:29:02Z",
+  "run_at": "2026-11-21T02:38:34Z",
   "states": 27
  },
  "salarios_uf": {
   "live_fetch": "success",
-  "run_at": "2026-11-20T13:29:02Z",
+  "run_at": "2026-11-21T02:38:34Z",
   "states": 27
  },
  "indice_pressao": {
   "derived": "success",
-  "run_at": "2026-11-20T13:29:02Z",
+  "run_at": "2026-11-21T02:38:34Z",
   "months": 24
  },
  "focus_tabela": {
   "live_fetch": "success",
-  "run_at": "2026-11-20T13:29:02Z",
+  "run_at": "2026-11-21T02:38:34Z",
   "rows": 9,
   "errors": []
  },
  "credito": {
   "live_fetch": "success",
-  "run_at": "2026-11-20T13:29:02Z",
+  "run_at": "2026-11-21T02:38:34Z",
   "series": 6,
   "errors": []
  },
  "indice_credito": {
   "derived": "success",
-  "run_at": "2026-11-20T13:29:02Z",
+  "run_at": "2026-11-21T02:38:34Z",
   "months": 97
  },
  "quality": {
   "derived": "success",
-  "run_at": "2026-11-20T13:29:02Z",
+  "run_at": "2026-11-21T02:38:34Z",
   "datasets": 11
  }
 }
