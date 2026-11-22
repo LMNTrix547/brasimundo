@@ -576,6 +576,87 @@ def build_credit_index():
         for row in series: w.writerow([row["month"], row["value"]])
     return len(series)
 
+# ---- Published-values archive (Index Laboratory) ------------------------------------------------------
+# Every published index month is stored with its inputs, its base values and its formula. The archive is
+# append-only: a stored month is never rewritten. If a later run disagrees with a stored value, the disagreement
+# is recorded as a conflict for review, and the stored value stays. verify_published() recomputes each stored
+# value from its own inputs, so any published number can be reproduced.
+FORMULA_EQW = "equal-weight-ratio-mean-x100"   # value = 100 × (1/n) × Σ_k (x_k / x_k,base)
+ARCHIVE_TOL = 0.01                              # published values are rounded to 2 decimals
+
+def _archive_path(index_id):
+    d = os.path.join(OUT, "lab", "published")
+    os.makedirs(d, exist_ok=True)
+    return os.path.join(d, f"{index_id}.jsonl")
+
+def _read_archive(path):
+    stored = {}
+    if os.path.exists(path):
+        with open(path, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    rec = json.loads(line)
+                    stored[(rec["month"], rec["version"])] = rec
+    return stored
+
+def archive_published(index_id, version, base_month, base_values, monthly_components, series, stamp):
+    path = _archive_path(index_id)
+    stored = _read_archive(path)
+    added, conflicts = 0, []
+    with open(path, "a", encoding="utf-8") as f:
+        for row in series:
+            m, v = row["month"], row["value"]
+            key = (m, version)
+            if key in stored:
+                if abs(stored[key]["value"] - v) > ARCHIVE_TOL:
+                    conflicts.append({"month": m, "stored": stored[key]["value"], "recomputed": v})
+                continue
+            rec = {"index": index_id, "version": version, "formula": FORMULA_EQW, "month": m, "value": v,
+                   "components": {k: monthly_components[k][m] for k in base_values},
+                   "base_month": base_month, "base": base_values, "archived_at": stamp}
+            f.write(json.dumps(rec, ensure_ascii=False, sort_keys=True) + "\n")
+            added += 1
+    return {"added": added, "conflicts": conflicts}
+
+def verify_published(index_id):
+    """Recomputes every stored value from its own components and base values. Returns (checked, mismatches)."""
+    stored = _read_archive(_archive_path(index_id))
+    checked, bad = 0, []
+    for (m, version), rec in stored.items():
+        if rec.get("formula") != FORMULA_EQW:
+            bad.append({"month": m, "reason": "unknown formula"}); continue
+        ratios = [rec["components"][k] / rec["base"][k] for k in rec["base"]]
+        recomputed = 100 * sum(ratios) / len(ratios)
+        checked += 1
+        if abs(recomputed - rec["value"]) > ARCHIVE_TOL:
+            bad.append({"month": m, "stored": rec["value"], "recomputed": round(recomputed, 4)})
+    return checked, bad
+
+def archive_indices(stamp):
+    out = {}
+    doc = json.load(open(f"{OUT}/indice_pressao.json", encoding="utf-8"))
+    keys = [c["key"] for c in doc["components"]]
+    today = NOW.date().isoformat()
+    mon = {k: _monthly_last(f"{OUT}/history/{k}.csv", today) for k in keys}
+    months = [row["month"] for row in doc["series"]]
+    comp = {k: {m: mon[k][m] for m in months} for k in keys}
+    base = {c["key"]: c["base"] for c in doc["components"]}
+    out["BMPI"] = archive_published("BMPI", "1.0", doc["base_month"], base, comp, doc["series"], stamp)
+    doc2 = json.load(open(f"{OUT}/indice_credito.json", encoding="utf-8"))
+    keys2 = [c["key"] for c in doc2["components"]]
+    mon2 = {k: _monthly_last(f"{OUT}/history/{k}.csv", today) for k in keys2}
+    months2 = [row["month"] for row in doc2["series"]]
+    comp2 = {k: {m: mon2[k][m] for m in months2} for k in keys2}
+    base2 = {c["key"]: c["base"] for c in doc2["components"]}
+    out["CCI"] = archive_published("CCI", "0.1", doc2["base_month"], base2, comp2, doc2["series"], stamp)
+    checks = {}
+    for idx in ("BMPI", "CCI"):
+        n, bad = verify_published(idx)
+        checks[idx] = {"checked": n, "mismatches": bad}
+    out["verify"] = checks
+    return out
+
 def main():
     os.makedirs(f"{OUT}/history", exist_ok=True)
     latest = load(f"{OUT}/latest.json", {})
@@ -659,6 +740,18 @@ def main():
     except Exception as e:
         status["indice_credito"] = {"derived": "failed", "run_at": stamp, "error": str(e)[:300]}
     print("indice_credito", status["indice_credito"]["derived"])
+    try:
+        arch = archive_indices(stamp)
+        status["lab_archive"] = {
+            "derived": "success", "run_at": stamp,
+            "added": {k: v["added"] for k, v in arch.items() if k != "verify"},
+            "conflicts": {k: v["conflicts"][:10] for k, v in arch.items() if k != "verify" and v["conflicts"]},
+            "verified": {k: v["checked"] for k, v in arch["verify"].items()},
+            "mismatches": {k: v["mismatches"][:10] for k, v in arch["verify"].items() if v["mismatches"]},
+        }
+    except Exception as e:
+        status["lab_archive"] = {"derived": "failed", "run_at": stamp, "error": str(e)[:300]}
+    print("lab_archive", status["lab_archive"]["derived"])
     try:
         status["quality"] = {"derived": "success", "run_at": stamp, "datasets": quality_report(stamp)}
     except Exception as e:
