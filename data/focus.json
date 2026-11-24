@@ -1,5 +1,5 @@
 {
- "retrieved_at": "2026-11-22T15:26:02Z",
+ "retrieved_at": "2026-11-24T05:23:52Z",
  "source": "Banco Central do Brasil, Expectativas de Mercado (Focus)",
  "license": "a confirmar na página de termos do Banco Central",
  "verification_level": "N5",
@@ -7,73 +7,73 @@
   {
    "indicador": "IPCA",
    "referencia": "2026",
-   "data_pesquisa": "2026-11-13",
-   "mediana": 5.1082,
-   "media": 5.1123,
-   "respondentes": 146
+   "data_pesquisa": "2026-11-19",
+   "mediana": 5.1505,
+   "media": 5.1452,
+   "respondentes": 147
   },
   {
    "indicador": "IPCA",
    "referencia": "2027",
-   "data_pesquisa": "2026-11-13",
-   "mediana": 5.0,
-   "media": 4.9551,
+   "data_pesquisa": "2026-11-19",
+   "mediana": 5.1214,
+   "media": 5.1068,
    "respondentes": 146
   },
   {
    "indicador": "IPCA",
    "referencia": "2028",
-   "data_pesquisa": "2026-11-13",
+   "data_pesquisa": "2026-11-19",
    "mediana": 4.0,
-   "media": 4.0509,
-   "respondentes": 133
+   "media": 4.091,
+   "respondentes": 134
   },
   {
    "indicador": "PIB Total",
    "referencia": "2026",
-   "data_pesquisa": "2026-11-13",
-   "mediana": 1.7215,
-   "media": 1.7319,
+   "data_pesquisa": "2026-11-19",
+   "mediana": 1.7018,
+   "media": 1.7053,
    "respondentes": 119
   },
   {
    "indicador": "PIB Total",
    "referencia": "2027",
-   "data_pesquisa": "2026-11-13",
-   "mediana": 1.0224,
-   "media": 1.0502,
+   "data_pesquisa": "2026-11-19",
+   "mediana": 0.9995,
+   "media": 0.9513,
    "respondentes": 118
   },
   {
    "indicador": "Selic",
    "referencia": "2026",
-   "data_pesquisa": "2026-11-13",
+   "data_pesquisa": "2026-11-19",
    "mediana": 13.75,
-   "media": 13.684,
-   "respondentes": 144
+   "media": 13.7138,
+   "respondentes": 145
   },
   {
    "indicador": "Selic",
    "referencia": "2027",
-   "data_pesquisa": "2026-11-13",
-   "mediana": 12.75,
-   "media": 12.776,
+   "data_pesquisa": "2026-11-19",
+   "mediana": 13.0,
+   "media": 12.8837,
    "respondentes": 144
   },
   {
    "indicador": "Câmbio",
    "referencia": "2026",
-   "data_pesquisa": "2026-11-13",
-   "mediana": 5.4,
-   "media": 5.3926,
+   "data_pesquisa": "2026-11-19",
+   "mediana": 5.55,
+   "media": 5.5523,
    "respondentes": 121
   },
   {
    "indicador": "Câmbio",
    "referencia": "2027",
-   "data_pesquisa": "2026-11-13",
-   "mediana": 5.45,
-   "media": 5.4251,
+   "data_pesquisa": "2026-11-19",
+   "mediana": 5.5,
+   "media": 5.5115,
    "respondentes": 120
   }
  ],
