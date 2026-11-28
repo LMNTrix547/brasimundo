@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-11-27T03:41:45Z",
+ "generated_at": "2026-11-28T03:24:20Z",
  "datasets": {
   "selic_meta": {
    "name": "Selic meta (SGS 432)",
    "unit": "% a.a.",
    "frequency": "a cada decisão",
-   "observations": 754,
+   "observations": 755,
    "first_observation": "2024-10-31",
-   "last_observation": "2026-11-27",
+   "last_observation": "2026-11-28",
    "missing_months": null,
    "future_rows_removed": 0,
    "duplicates_removed": 0,
@@ -37,9 +37,9 @@
    "name": "PTAX dólar, venda",
    "unit": "R$",
    "frequency": "diária",
-   "observations": 518,
+   "observations": 519,
    "first_observation": "2024-10-31",
-   "last_observation": "2026-11-26",
+   "last_observation": "2026-11-27",
    "missing_months": null,
    "future_rows_removed": 0,
    "duplicates_removed": 0,
@@ -53,9 +53,9 @@
    "name": "PTAX euro, venda",
    "unit": "R$",
    "frequency": "diária",
-   "observations": 518,
+   "observations": 519,
    "first_observation": "2024-10-31",
-   "last_observation": "2026-11-26",
+   "last_observation": "2026-11-27",
    "missing_months": null,
    "future_rows_removed": 0,
    "duplicates_removed": 0,
@@ -69,9 +69,9 @@
    "name": "Taxa de desocupação (PNAD Contínua, IBGE)",
    "unit": "%",
    "frequency": "trimestre móvel",
-   "observations": 24,
+   "observations": 25,
    "first_observation": "2024-10-01",
-   "last_observation": "2026-09-01",
+   "last_observation": "2026-10-01",
    "missing_months": 0,
    "future_rows_removed": 0,
    "duplicates_removed": 0,
@@ -132,17 +132,17 @@
   "estados_desemprego": {
    "name": "Desemprego por UF",
    "collection": "success",
-   "run_at": "2026-11-27T03:41:45Z"
+   "run_at": "2026-11-28T03:24:20Z"
   },
   "salarios_uf": {
    "name": "Rendimento por UF",
    "collection": "success",
-   "run_at": "2026-11-27T03:41:45Z"
+   "run_at": "2026-11-28T03:24:20Z"
   },
   "indice_pressao": {
    "name": "Índice de pressão macroeconômica",
    "collection": "success",
-   "run_at": "2026-11-27T03:41:45Z"
+   "run_at": "2026-11-28T03:24:20Z"
   }
  }
 }

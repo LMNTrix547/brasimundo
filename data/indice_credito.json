@@ -2,28 +2,28 @@
  "name": "Índice de custo do crédito ao consumidor (versão inicial)",
  "base_month": "2018-09",
  "base_value": 100,
- "latest_month": "2026-09",
+ "latest_month": "2026-10",
  "components": [
   {
    "key": "cheque_especial",
    "label": "Cheque especial",
    "weight": 0.3333,
    "base": 255.45,
-   "latest": 139.02
+   "latest": 136.14
   },
   {
    "key": "rotativo",
    "label": "Rotativo",
    "weight": 0.3333,
    "base": 284.22,
-   "latest": 451.71
+   "latest": 445.99
   },
   {
    "key": "cartao_parcelado",
    "label": "Cartão parcelado",
    "weight": 0.3333,
    "base": 164.5,
-   "latest": 193.02
+   "latest": 194.68
   }
  ],
  "series": [
@@ -414,10 +414,14 @@
   {
    "month": "2026-09",
    "value": 110.23
+  },
+  {
+   "month": "2026-10",
+   "value": 109.52
   }
  ],
- "months": 97,
- "retrieved_at": "2026-11-27T03:41:45Z",
+ "months": 98,
+ "retrieved_at": "2026-11-28T03:24:20Z",
  "source": "Derivado de séries do Banco Central do Brasil (SGS)",
  "license": "a confirmar na página de termos do Banco Central",
  "verification_level": "N5 (derivado)"
